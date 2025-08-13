@@ -265,10 +265,10 @@ const Game: React.FC = () => {
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: -20 }}
-            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50"
+            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-sm mx-4"
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
           >
-            <div className="bg-purple-50/90 backdrop-blur-sm rounded-2xl px-20 py-4 shadow-2xl border border-purple-200/50 min-w-[400px] max-w-[600px]">
+            <div className="bg-purple-50/90 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-2xl border border-purple-200/50 w-full">
               <p className="text-gray-800 font-semibold text-lg text-center leading-tight">{message}</p>
             </div>
           </motion.div>
