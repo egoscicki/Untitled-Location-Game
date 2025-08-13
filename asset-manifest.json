@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/Untitled-Location-Game/static/css/main.222647d7.css",
+    "main.js": "/Untitled-Location-Game/static/js/main.c63c1102.js",
+    "static/js/453.cfc2d7f8.chunk.js": "/Untitled-Location-Game/static/js/453.cfc2d7f8.chunk.js",
+    "index.html": "/Untitled-Location-Game/index.html",
+    "main.222647d7.css.map": "/Untitled-Location-Game/static/css/main.222647d7.css.map",
+    "main.c63c1102.js.map": "/Untitled-Location-Game/static/js/main.c63c1102.js.map",
+    "453.cfc2d7f8.chunk.js.map": "/Untitled-Location-Game/static/js/453.cfc2d7f8.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.222647d7.css",
+    "static/js/main.c63c1102.js"
+  ]
+}
