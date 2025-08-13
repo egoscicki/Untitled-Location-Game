@@ -150,73 +150,74 @@ const SAMPLE_LOCATIONS: Location[] = [
   }
 ];
 
-// More robust random number generation
-const getRandomIndex = (max: number): number => {
-  let randomValue: number;
-  
-  // Use crypto.getRandomValues if available (more random than Math.random)
-  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
-    const array = new Uint32Array(1);
-    crypto.getRandomValues(array);
-    randomValue = array[0];
-  } else {
-    // Fallback to Math.random with additional entropy
-    randomValue = Math.random() * 0xFFFFFFFF;
+// Completely rewritten randomization system
+let usedIndices = new Set<number>();
+let consecutiveCount = 0;
+
+const getTrulyRandomIndex = (max: number): number => {
+  // If we've used most indices, reset to allow reuse
+  if (usedIndices.size >= max * 0.8) {
+    usedIndices.clear();
+    console.log('🔄 Reset used indices - allowing reuse of locations');
   }
   
-  // Add additional entropy from multiple sources
-  const timestamp = Date.now() % max;
-  const perfTime = (typeof performance !== 'undefined' ? performance.now() : Date.now()) % max;
+  let attempts = 0;
+  let randomIndex: number;
   
-  // Combine multiple random sources for better distribution
-  const combinedRandom = (randomValue + timestamp + perfTime) % max;
+  do {
+    // Use crypto.randomValues for maximum randomness
+    if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+      const array = new Uint32Array(1);
+      crypto.getRandomValues(array);
+      randomIndex = array[0] % max;
+    } else {
+      // Fallback with multiple entropy sources
+      const timestamp = Date.now();
+      const perfTime = typeof performance !== 'undefined' ? performance.now() : timestamp;
+      const mathRandom = Math.random();
+      
+      randomIndex = Math.floor(((timestamp % max) + (perfTime % max) + (mathRandom * max)) / 3);
+    }
+    
+    attempts++;
+    
+    // Prevent infinite loops
+    if (attempts > 100) {
+      console.warn('⚠️ Too many attempts, forcing random selection');
+      break;
+    }
+  } while (usedIndices.has(randomIndex));
   
-  return Math.floor(combinedRandom);
+  // Track this index as used
+  usedIndices.add(randomIndex);
+  
+  console.log(`🎲 Random index ${randomIndex} selected after ${attempts} attempts`);
+  console.log(`📊 Used indices: ${usedIndices.size}/${max} (${Math.round((usedIndices.size / max) * 100)}%)`);
+  
+  return randomIndex;
 };
 
-// Keep track of how many times we've called this to occasionally shuffle
-let locationCallCount = 0;
-let lastSelectedIndices: number[] = [];
-
 export const getRandomLocation = async (): Promise<Location> => {
-  // Occasionally shuffle the locations array to prevent patterns
-  locationCallCount++;
-  if (locationCallCount % 3 === 0) { // Shuffle every 3 calls instead of 5
+  consecutiveCount++;
+  
+  // Force shuffle every 2 calls to prevent any patterns
+  if (consecutiveCount % 2 === 0) {
     shuffleArray(SAMPLE_LOCATIONS);
-    console.log('🔄 Shuffled locations array to prevent patterns');
+    console.log('🔄 Forced shuffle every 2 calls to prevent patterns');
   }
   
-  // Use a more robust random number generation
-  let randomIndex = getRandomIndex(SAMPLE_LOCATIONS.length);
-  
-  // Ensure we don't get the same location twice in a row
-  if (lastSelectedIndices.length > 0 && lastSelectedIndices[lastSelectedIndices.length - 1] === randomIndex) {
-    // If we got the same index, try again (but only once to avoid infinite loops)
-    const newRandomIndex = getRandomIndex(SAMPLE_LOCATIONS.length);
-    if (newRandomIndex !== randomIndex) {
-      randomIndex = newRandomIndex;
-      console.log('🔄 Avoided duplicate location, new index:', randomIndex);
-    }
-  }
-  
+  const randomIndex = getTrulyRandomIndex(SAMPLE_LOCATIONS.length);
   const location = SAMPLE_LOCATIONS[randomIndex];
   
-  // Track the last few selections to detect patterns
-  lastSelectedIndices.push(randomIndex);
-  if (lastSelectedIndices.length > 10) {
-    lastSelectedIndices.shift(); // Keep only last 10
-  }
-  
-  console.log('🎲 Random index generated:', randomIndex);
-  console.log('🎯 Getting random location:', location.city, location.country);
+  console.log('🎯 Selected location:', location.city, location.country);
   console.log('📍 Total locations available:', SAMPLE_LOCATIONS.length);
-  console.log('📊 Last 10 selected indices:', lastSelectedIndices);
-  console.log('🔄 Shuffle count:', Math.floor(locationCallCount / 3));
+  console.log('🔄 Consecutive count:', consecutiveCount);
   
   // Generate Google Street View image URL
-  console.log('🖼️ Attempting to get Street View image for:', location.lat, location.lng);
+  console.log('🖼️ Getting Street View image for:', location.lat, location.lng);
   const imageUrl = await placesApiService.getStreetViewImage(location.lat, location.lng);
   console.log('✅ Street View image URL generated:', imageUrl);
+  
   return { ...location, imageUrl };
 };
 
@@ -296,12 +297,27 @@ export const generateHint = (stage: GameStage, correctAnswer: string, currentLoc
   };
 };
 
+// Improved Fisher-Yates shuffle with crypto randomness
 const shuffleArray = <T>(array: T[]): T[] => {
   const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  
+  // Use crypto.randomValues for shuffle if available
+  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const array = new Uint32Array(1);
+      crypto.getRandomValues(array);
+      const j = array[0] % (i + 1);
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+  } else {
+    // Fallback to Math.random
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
   }
+  
+  console.log('🔄 Array shuffled with crypto randomness');
   return shuffled;
 };
 
