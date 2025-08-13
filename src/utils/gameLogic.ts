@@ -1,6 +1,6 @@
-import { Location, GameStage, GuessResult, SCORING } from '../types/game';
+import { Location, GameStage, GuessResult, SCORING, Hint } from '../types/game';
 
-// Sample locations with reliable placeholder images
+// Sample locations with better outdoor/landscape images
 const SAMPLE_LOCATIONS: Location[] = [
   {
     lat: 40.7128,
@@ -9,7 +9,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     state: 'New York',
     country: 'United States',
     continent: 'North America',
-    imageUrl: 'https://picsum.photos/600/400?random=1'
+    imageUrl: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=600&h=400&fit=crop&crop=center'
   },
   {
     lat: 34.0522,
@@ -18,7 +18,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     state: 'California',
     country: 'United States',
     continent: 'North America',
-    imageUrl: 'https://picsum.photos/600/400?random=2'
+    imageUrl: 'https://images.unsplash.com/photo-1544919972-8e75be0d8bca?w=600&h=400&fit=crop&crop=center'
   },
   {
     lat: 51.5074,
@@ -27,7 +27,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     state: 'England',
     country: 'United Kingdom',
     continent: 'Europe',
-    imageUrl: 'https://picsum.photos/600/400?random=3'
+    imageUrl: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=600&h=400&fit=crop&crop=center'
   },
   {
     lat: 48.8566,
@@ -36,7 +36,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     state: 'Île-de-France',
     country: 'France',
     continent: 'Europe',
-    imageUrl: 'https://picsum.photos/600/400?random=4'
+    imageUrl: 'https://images.unsplash.com/photo-1502602898534-861c5e4c1f0b?w=600&h=400&fit=crop&crop=center'
   },
   {
     lat: 35.6762,
@@ -45,7 +45,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     state: 'Tokyo',
     country: 'Japan',
     continent: 'Asia',
-    imageUrl: 'https://picsum.photos/600/400?random=5'
+    imageUrl: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&h=400&fit=crop&crop=center'
   },
   {
     lat: -33.8688,
@@ -54,7 +54,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     state: 'New South Wales',
     country: 'Australia',
     continent: 'Oceania',
-    imageUrl: 'https://picsum.photos/600/400?random=6'
+    imageUrl: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=600&h=400&fit=crop&crop=center'
   },
   {
     lat: -22.9068,
@@ -63,7 +63,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     state: 'Rio de Janeiro',
     country: 'Brazil',
     continent: 'South America',
-    imageUrl: 'https://picsum.photos/600/400?random=7'
+    imageUrl: 'https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=600&h=400&fit=crop&crop=center'
   },
   {
     lat: 30.0444,
@@ -72,13 +72,56 @@ const SAMPLE_LOCATIONS: Location[] = [
     state: 'Cairo',
     country: 'Egypt',
     continent: 'Africa',
-    imageUrl: 'https://picsum.photos/600/400?random=8'
+    imageUrl: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop&crop=center'
   }
 ];
 
 export const getRandomLocation = (): Location => {
   const randomIndex = Math.floor(Math.random() * SAMPLE_LOCATIONS.length);
   return SAMPLE_LOCATIONS[randomIndex];
+};
+
+export const generateHint = (stage: GameStage, correctAnswer: string): Hint => {
+  let options: string[] = [];
+  
+  switch (stage) {
+    case 'continent':
+      options = ['Africa', 'Antarctica', 'Asia', 'Europe', 'North America', 'Oceania', 'South America'];
+      break;
+    case 'country':
+      options = ['United States', 'United Kingdom', 'France', 'Japan', 'Australia', 'Brazil', 'Egypt', 'Germany', 'Italy', 'Spain'];
+      break;
+    case 'state':
+      options = ['California', 'Texas', 'Florida', 'New York', 'Illinois', 'Pennsylvania', 'Ohio', 'Georgia', 'North Carolina', 'Michigan'];
+      break;
+    case 'city':
+      options = ['New York', 'Los Angeles', 'London', 'Paris', 'Tokyo', 'Sydney', 'Rio de Janeiro', 'Cairo', 'Berlin', 'Rome'];
+      break;
+  }
+  
+  // Remove the correct answer and shuffle
+  options = options.filter(option => option !== correctAnswer);
+  options = shuffleArray(options);
+  
+  // Take first 4 wrong options and add correct answer
+  const wrongOptions = options.slice(0, 4);
+  const allOptions = [...wrongOptions, correctAnswer];
+  
+  // Shuffle again so correct answer isn't always last
+  return {
+    options: shuffleArray(allOptions),
+    correctAnswer,
+    stage
+  };
+};
+
+const shuffleArray = <T>(array: T[]): T[] => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
 };
 
 export const checkGuess = (

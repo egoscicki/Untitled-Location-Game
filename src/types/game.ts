@@ -21,6 +21,7 @@ export interface GameState {
   score: number;
   gameStatus: 'playing' | 'won' | 'lost';
   isLoading: boolean;
+  hintsUsed: number;
 }
 
 export type GameStage = 'continent' | 'country' | 'state' | 'city';
@@ -29,6 +30,12 @@ export interface GuessResult {
   isCorrect: boolean;
   message: string;
   points: number;
+}
+
+export interface Hint {
+  options: string[];
+  correctAnswer: string;
+  stage: GameStage;
 }
 
 export const CONTINENTS = [
@@ -47,3 +54,5 @@ export const SCORING = {
   state: { first: 30, subsequent: 15 },
   city: { first: 50, subsequent: 25 }
 } as const;
+
+export const MAX_HINTS = 3;

@@ -7,6 +7,7 @@ import LocationImage from './LocationImage';
 import GuessInput from './GuessInput';
 import ScoreDisplay from './ScoreDisplay';
 import GameOver from './GameOver';
+import HintButton from './HintButton';
 
 const Game: React.FC = () => {
   const [gameState, setGameState] = useState<GameState>({
@@ -21,7 +22,8 @@ const Game: React.FC = () => {
     totalGuesses: 0,
     score: 0,
     gameStatus: 'playing',
-    isLoading: true
+    isLoading: true,
+    hintsUsed: 0
   });
 
   const [message, setMessage] = useState<string>('');
@@ -44,6 +46,13 @@ const Game: React.FC = () => {
       console.error('Failed to initialize game:', error);
       setGameState(prev => ({ ...prev, isLoading: false }));
     }
+  };
+
+  const handleHintUsed = () => {
+    setGameState(prev => ({
+      ...prev,
+      hintsUsed: prev.hintsUsed + 1
+    }));
   };
 
   const handleGuess = async (guess: string) => {
@@ -124,7 +133,8 @@ const Game: React.FC = () => {
       totalGuesses: 0,
       score: 0,
       gameStatus: 'playing',
-      isLoading: false
+      isLoading: false,
+      hintsUsed: 0
     });
     setMessage('');
     setShowMessage(false);
@@ -167,6 +177,7 @@ const Game: React.FC = () => {
           score={gameState.score}
           totalGuesses={gameState.totalGuesses}
           currentStage={gameState.currentStage}
+          hintsUsed={gameState.hintsUsed}
         />
 
         {/* Game Container */}
@@ -180,6 +191,16 @@ const Game: React.FC = () => {
             imageUrl={gameState.currentLocation?.imageUrl || ''}
             city={gameState.currentLocation?.city || ''}
           />
+
+          {/* Hint Button */}
+          <div className="mt-4 flex justify-center">
+            <HintButton
+              currentStage={gameState.currentStage}
+              currentLocation={gameState.currentLocation}
+              hintsUsed={gameState.hintsUsed}
+              onHintUsed={handleHintUsed}
+            />
+          </div>
 
           {/* Guess Input */}
           <div className="mt-6">

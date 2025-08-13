@@ -7,9 +7,10 @@ interface ScoreDisplayProps {
   score: number;
   totalGuesses: number;
   currentStage: GameStage;
+  hintsUsed?: number;
 }
 
-const ScoreDisplay: React.FC<ScoreDisplayProps> = ({ score, totalGuesses, currentStage }) => {
+const ScoreDisplay: React.FC<ScoreDisplayProps> = ({ score, totalGuesses, currentStage, hintsUsed = 0 }) => {
   const getStageProgress = (): number => {
     const stages: GameStage[] = ['continent', 'country', 'state', 'city'];
     const currentIndex = stages.indexOf(currentStage);
@@ -37,7 +38,7 @@ const ScoreDisplay: React.FC<ScoreDisplayProps> = ({ score, totalGuesses, curren
       animate={{ opacity: 1, y: 0 }}
       className="game-container p-4 mb-6"
     >
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Score */}
         <div className="text-center">
           <div className="text-2xl font-bold score-display mb-1">
@@ -52,6 +53,14 @@ const ScoreDisplay: React.FC<ScoreDisplayProps> = ({ score, totalGuesses, curren
             {totalGuesses}/10
           </div>
           <div className="text-sm text-gray-600">Guesses Used</div>
+        </div>
+
+        {/* Hints Used */}
+        <div className="text-center">
+          <div className="text-2xl font-bold text-yellow-600 mb-1">
+            {hintsUsed}/3
+          </div>
+          <div className="text-sm text-gray-600">Hints Used</div>
         </div>
 
         {/* Current Stage */}
