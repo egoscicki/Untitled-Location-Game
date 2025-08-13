@@ -80,7 +80,7 @@ const getTrulyRandomIndex = (max: number): number => {
   return randomIndex;
 };
 
-export const getRandomLocation = async (): Promise<Location> => {
+export const getRandomLocation = async (gameMode: 'us' | 'world' = 'world'): Promise<Location> => {
   // Occasionally shuffle the locations array to prevent patterns
   consecutiveCount++;
   if (consecutiveCount % 2 === 0) { // Shuffle every 2 calls instead of 5
@@ -88,9 +88,16 @@ export const getRandomLocation = async (): Promise<Location> => {
     console.log('🔄 Shuffled locations array to prevent patterns');
   }
   
+  // Filter locations based on game mode
+  let availableLocations = BASE_LOCATIONS;
+  if (gameMode === 'us') {
+    availableLocations = BASE_LOCATIONS.filter(location => location.country === 'United States');
+    console.log('🇺🇸 US Mode: Filtered to US locations only');
+  }
+  
   // Use a more robust random number generation
-  const randomIndex = getTrulyRandomIndex(BASE_LOCATIONS.length);
-  const location = BASE_LOCATIONS[randomIndex];
+  const randomIndex = getTrulyRandomIndex(availableLocations.length);
+  const location = availableLocations[randomIndex];
   
   // Generate 3 different Street View images for carousel
   const imageUrls: string[] = [];
@@ -104,7 +111,7 @@ export const getRandomLocation = async (): Promise<Location> => {
   const { lat, lng } = getRandomizedCoordinates(location.baseLat, location.baseLng);
   
   console.log('🎯 Selected location:', location.city, location.country);
-  console.log('📍 Total locations available:', BASE_LOCATIONS.length);
+  console.log('📍 Total locations available:', availableLocations.length);
   console.log('🔄 Consecutive count:', consecutiveCount);
   console.log('🖼️ Generated 3 Street View images for carousel');
   

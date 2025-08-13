@@ -8,6 +8,7 @@ import GuessInput from './GuessInput';
 import ScoreDisplay from './ScoreDisplay';
 import GameOver from './GameOver';
 import HintButton from './HintButton';
+import GameModeSelection from './GameModeSelection';
 
 // Custom hook for audio management
 const useAudio = (src: string) => {
@@ -48,6 +49,7 @@ const useAudio = (src: string) => {
 };
 
 const Game: React.FC = () => {
+  const [gameMode, setGameMode] = useState<'us' | 'world' | null>(null);
   const [gameState, setGameState] = useState<GameState>({
     currentLocation: null,
     currentStage: 'continent',
@@ -73,14 +75,26 @@ const Game: React.FC = () => {
   const incorrectAudio = useAudio('/sounds/incorrect.mp3');
   const stageAudio = useAudio('/sounds/stage.mp3');
 
-  useEffect(() => {
-    initializeGame();
-  }, []);
+  const handleGameModeSelected = (mode: 'us' | 'world') => {
+    setGameMode(mode);
+    
+    // Set initial stage based on game mode
+    const initialStage = mode === 'us' ? 'region' : 'continent';
+    
+    setGameState(prev => ({
+      ...prev,
+      currentStage: initialStage,
+      isLoading: false
+    }));
+    
+    // Initialize game with selected mode
+    initializeGame(mode);
+  };
 
-  const initializeGame = async () => {
+  const initializeGame = async (mode: 'us' | 'world') => {
     try {
       await placesApiService.initialize();
-      const newLocation = await getRandomLocation();
+      const newLocation = await getRandomLocation(mode);
       setGameState(prev => ({
         ...prev,
         currentLocation: newLocation,
@@ -189,10 +203,10 @@ const Game: React.FC = () => {
 
   const resetGame = async () => {
     try {
-      const newLocation = await getRandomLocation();
+      const newLocation = await getRandomLocation(gameMode!);
       setGameState({
         currentLocation: newLocation,
-        currentStage: 'continent',
+        currentStage: gameMode === 'us' ? 'region' : 'continent',
         guesses: {
           continent: [],
           country: [],
@@ -216,6 +230,11 @@ const Game: React.FC = () => {
   const handlePlayAgain = () => {
     resetGame();
   };
+
+  // Show game mode selection if no mode selected yet
+  if (!gameMode) {
+    return <GameModeSelection onGameModeSelected={handleGameModeSelected} />;
+  }
 
   if (gameState.isLoading) {
     return (
@@ -245,9 +264,23 @@ const Game: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8 pt-4"
         >
-          <h1 className="text-4xl font-bold text-white mb-2">Wherzit</h1>
+          <div className="flex items-center justify-center mb-4">
+            <div className="w-12 h-12 mr-3 flex items-center justify-center">
+              <img 
+                src="/Wherzit_logo.svg" 
+                alt="Wherzit Logo" 
+                className="w-full h-full"
+              />
+            </div>
+            <h1 className="text-4xl font-bold text-white">Wherzit</h1>
+          </div>
           <p className="text-white/80 text-lg">Guess the location from the image!</p>
         </motion.div>
+
+        {/* Game Mode Selection */}
+        <GameModeSelection
+          onGameModeSelected={handleGameModeSelected}
+        />
 
         {/* Score Display */}
         <ScoreDisplay
