@@ -75,33 +75,56 @@ const Game: React.FC = () => {
   const incorrectAudio = useAudio('/sounds/incorrect.mp3');
   const stageAudio = useAudio('/sounds/stage.mp3');
 
-  const handleGameModeSelected = (mode: 'us' | 'world') => {
+  const handleGameModeSelected = async (mode: 'us' | 'world') => {
+    console.log('🎮 Game mode selected:', mode);
     setGameMode(mode);
     
     // Set initial stage based on game mode
     const initialStage = mode === 'us' ? 'region' : 'continent';
+    console.log('📍 Initial stage set to:', initialStage);
     
+    // Set loading state first
     setGameState(prev => ({
       ...prev,
       currentStage: initialStage,
-      isLoading: false
+      isLoading: true
     }));
     
+    console.log('⏳ Starting game initialization...');
     // Initialize game with selected mode
-    initializeGame(mode);
+    await initializeGame(mode);
   };
 
   const initializeGame = async (mode: 'us' | 'world') => {
     try {
+      console.log('🔧 Initializing Places API...');
       await placesApiService.initialize();
+      
+      console.log('🎯 Getting random location for mode:', mode);
       const newLocation = await getRandomLocation(mode);
+      console.log('✅ Location obtained:', newLocation.city, newLocation.country);
+      
+      // Update game state with the new location
       setGameState(prev => ({
         ...prev,
         currentLocation: newLocation,
-        isLoading: false
+        isLoading: false,
+        currentStage: mode === 'us' ? 'region' : 'continent',
+        guesses: {
+          continent: [],
+          country: [],
+          region: [],
+          city: []
+        },
+        totalGuesses: 0,
+        score: 0,
+        gameStatus: 'playing',
+        hintsUsed: 0
       }));
+      
+      console.log('🎉 Game state updated successfully');
     } catch (error) {
-      console.error('Failed to initialize game:', error);
+      console.error('❌ Failed to initialize game:', error);
       setGameState(prev => ({ ...prev, isLoading: false }));
     }
   };
