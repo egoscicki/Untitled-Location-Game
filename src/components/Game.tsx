@@ -17,6 +17,14 @@ const useAudio = (src: string) => {
     if (src) {
       audioRef.current = new Audio(src);
       audioRef.current.volume = 0.6; // Set volume to 60%
+      audioRef.current.preload = 'auto'; // Preload the audio
+      
+      // Add error handling
+      audioRef.current.addEventListener('error', (e) => {
+        console.error('Audio error:', e);
+      });
+      
+      console.log('🎵 Audio loaded:', src);
     }
   }, [src]);
 
@@ -24,8 +32,15 @@ const useAudio = (src: string) => {
     if (audioRef.current) {
       audioRef.current.currentTime = 0; // Reset to beginning
       audioRef.current.play().catch(error => {
-        console.log('Audio playback failed:', error);
+        console.error('Audio playback failed:', error);
+        // Try to reload and play again
+        if (audioRef.current) {
+          audioRef.current.load();
+          audioRef.current.play().catch(e => console.error('Retry failed:', e));
+        }
       });
+    } else {
+      console.warn('Audio not loaded yet:', src);
     }
   };
 
@@ -235,6 +250,21 @@ const Game: React.FC = () => {
           hintsUsed={gameState.hintsUsed}
         />
 
+        {/* Temporary Audio Test Button - Remove after debugging */}
+        <div className="text-center mb-4">
+          <button
+            onClick={() => {
+              console.log('🎵 Testing audio...');
+              correctAudio.play();
+              setTimeout(() => incorrectAudio.play(), 1000);
+              setTimeout(() => stageAudio.play(), 2000);
+            }}
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-600 transition-colors"
+          >
+            🎵 Test Audio
+          </button>
+        </div>
+
         {/* Game Container */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
@@ -306,7 +336,7 @@ const Game: React.FC = () => {
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
           >
             <div className="bg-purple-50/90 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-2xl border border-purple-200/50 max-w-[90vw] w-auto pointer-events-auto">
-              <p className="text-gray-800 font-semibold text-sm sm:text-base text-center leading-tight break-words">{message}</p>
+              <p className="text-gray-800 font-bold text-lg sm:text-xl text-center leading-tight break-words">{message}</p>
             </div>
           </motion.div>
         )}

@@ -11,6 +11,14 @@ const useAudio = (src: string) => {
     if (src) {
       audioRef.current = new Audio(src);
       audioRef.current.volume = 0.7; // Set volume to 70%
+      audioRef.current.preload = 'auto'; // Preload the audio
+      
+      // Add error handling
+      audioRef.current.addEventListener('error', (e) => {
+        console.error('Audio error:', e);
+      });
+      
+      console.log('🎵 Audio loaded:', src);
     }
   }, [src]);
 
@@ -18,8 +26,15 @@ const useAudio = (src: string) => {
     if (audioRef.current) {
       audioRef.current.currentTime = 0; // Reset to beginning
       audioRef.current.play().catch(error => {
-        console.log('Audio playback failed:', error);
+        console.error('Audio playback failed:', error);
+        // Try to reload and play again
+        if (audioRef.current) {
+          audioRef.current.load();
+          audioRef.current.play().catch(e => console.error('Retry failed:', e));
+        }
       });
+    } else {
+      console.warn('Audio not loaded yet:', src);
     }
   };
 

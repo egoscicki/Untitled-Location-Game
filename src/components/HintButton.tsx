@@ -10,6 +10,14 @@ const useAudio = (src: string) => {
     if (src) {
       audioRef.current = new Audio(src);
       audioRef.current.volume = 0.6; // Set volume to 60%
+      audioRef.current.preload = 'auto'; // Preload the audio
+      
+      // Add error handling
+      audioRef.current.addEventListener('error', (e) => {
+        console.error('Audio error:', e);
+      });
+      
+      console.log('🎵 Audio loaded:', src);
     }
   }, [src]);
 
@@ -17,8 +25,15 @@ const useAudio = (src: string) => {
     if (audioRef.current) {
       audioRef.current.currentTime = 0; // Reset to beginning
       audioRef.current.play().catch(error => {
-        console.log('Audio playback failed:', error);
+        console.error('Audio playback failed:', error);
+        // Try to reload and play again
+        if (audioRef.current) {
+          audioRef.current.load();
+          audioRef.current.play().catch(e => console.error('Retry failed:', e));
+        }
       });
+    } else {
+      console.warn('Audio not loaded yet:', src);
     }
   };
 
@@ -153,26 +168,28 @@ const HintButton: React.FC<HintButtonProps> = ({
             initial={{ opacity: 0, scale: 0.9, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: -10 }}
-            className="absolute top-full mt-2 left-0 right-0 z-20 bg-white border border-gray-300 rounded-lg shadow-lg p-4 min-w-[300px]"
+            className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none"
           >
-            <h4 className="font-semibold text-gray-800 mb-3 text-center">
-              💡 Hint for {currentStage}:
-            </h4>
-            {/* 2x2 Grid Layout */}
-            <div className="grid grid-cols-2 gap-3">
-              {hintOptions.map((option, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleOptionClick(option)}
-                  className="px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-md transition-colors text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-200 hover:border-gray-300"
-                >
-                  {option}
-                </button>
-              ))}
+            <div className="bg-white border border-gray-300 rounded-lg shadow-lg p-4 min-w-[300px] max-w-[400px] pointer-events-auto">
+              <h4 className="font-semibold text-gray-800 mb-3 text-center">
+                💡 Hint for {currentStage}:
+              </h4>
+              {/* 2x2 Grid Layout */}
+              <div className="grid grid-cols-2 gap-3">
+                {hintOptions.map((option, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleOptionClick(option)}
+                    className="px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-md transition-colors text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-200 hover:border-gray-300"
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
+              <p className="text-xs text-gray-500 mt-3 text-center">
+                Click an option to submit it as your guess!
+              </p>
             </div>
-            <p className="text-xs text-gray-500 mt-3 text-center">
-              Click an option to submit it as your guess!
-            </p>
           </motion.div>
         )}
       </AnimatePresence>
