@@ -23,16 +23,12 @@ const LocationImage: React.FC<LocationImageProps> = ({ imageUrl, city }) => {
     setHasError(true);
   };
 
-  // Log when component mounts
-  console.log('🖼️ Attempting to load image for', city, ':', imageUrl);
-
   if (hasError) {
     return (
       <div className="flex items-center justify-center h-96 bg-gray-200 rounded-lg">
         <div className="text-center">
           <div className="text-6xl mb-4">🌍</div>
           <p className="text-gray-600 text-lg">Image unavailable</p>
-          <p className="text-gray-500 text-sm">Location: {city}</p>
           <div className="mt-4 text-xs text-gray-500">
             <p>URL: {imageUrl}</p>
             <button 

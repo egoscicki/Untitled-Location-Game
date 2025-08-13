@@ -37,7 +37,7 @@ const Game: React.FC = () => {
   const initializeGame = async () => {
     try {
       await placesApiService.initialize();
-      const newLocation = getRandomLocation();
+      const newLocation = await getRandomLocation();
       setGameState(prev => ({
         ...prev,
         currentLocation: newLocation,
@@ -127,26 +127,34 @@ const Game: React.FC = () => {
     }
   };
 
-  const resetGame = () => {
-    const newLocation = getRandomLocation();
-    setGameState({
-      currentLocation: newLocation,
-      currentStage: 'continent',
-      guesses: {
-        continent: [],
-        country: [],
-        region: [],
-        city: []
-      },
-      totalGuesses: 0,
-      score: 0,
-      gameStatus: 'playing',
-      isLoading: false,
-      hintsUsed: 0
-    });
-    setMessage('');
-    setShowMessage(false);
-    setHintValue('');
+  const resetGame = async () => {
+    try {
+      const newLocation = await getRandomLocation();
+      setGameState({
+        currentLocation: newLocation,
+        currentStage: 'continent',
+        guesses: {
+          continent: [],
+          country: [],
+          region: [],
+          city: []
+        },
+        totalGuesses: 0,
+        score: 0,
+        gameStatus: 'playing',
+        isLoading: false,
+        hintsUsed: 0
+      });
+      setMessage('');
+      setShowMessage(false);
+      setHintValue('');
+    } catch (error) {
+      console.error('Failed to reset game:', error);
+    }
+  };
+
+  const handlePlayAgain = () => {
+    resetGame();
   };
 
   if (gameState.isLoading) {
@@ -163,7 +171,7 @@ const Game: React.FC = () => {
         gameStatus={gameState.gameStatus}
         score={gameState.score}
         location={gameState.currentLocation!}
-        onPlayAgain={resetGame}
+        onPlayAgain={handlePlayAgain}
       />
     );
   }

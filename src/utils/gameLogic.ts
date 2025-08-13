@@ -1,6 +1,7 @@
 import { Location, GameStage, GuessResult, SCORING, Hint } from '../types/game';
+import { placesApiService } from '../services/placesApi';
 
-// Sample locations with better outdoor/landscape images and universal terminology
+// Sample locations with Google Street View images
 const SAMPLE_LOCATIONS: Location[] = [
   {
     lat: 40.7128,
@@ -9,7 +10,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     region: 'New York',
     country: 'United States',
     continent: 'North America',
-    imageUrl: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=600&h=400&fit=crop&crop=center&auto=format&q=80'
+    imageUrl: '' // Will be set dynamically
   },
   {
     lat: 34.0522,
@@ -18,7 +19,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     region: 'California',
     country: 'United States',
     continent: 'North America',
-    imageUrl: 'https://images.unsplash.com/photo-1544919972-8e75be0d8bca?w=600&h=400&fit=crop&crop=center&auto=format&q=80'
+    imageUrl: '' // Will be set dynamically
   },
   {
     lat: 51.5074,
@@ -27,7 +28,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     region: 'England',
     country: 'United Kingdom',
     continent: 'Europe',
-    imageUrl: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=600&h=400&fit=crop&crop=center&auto=format&q=80'
+    imageUrl: '' // Will be set dynamically
   },
   {
     lat: 48.8566,
@@ -36,7 +37,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     region: 'Île-de-France',
     country: 'France',
     continent: 'Europe',
-    imageUrl: 'https://images.unsplash.com/photo-1502602898534-861c5e4c1f0b?w=600&h=400&fit=crop&crop=center&auto=format&q=80'
+    imageUrl: '' // Will be set dynamically
   },
   {
     lat: 35.6762,
@@ -45,7 +46,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     region: 'Tokyo',
     country: 'Japan',
     continent: 'Asia',
-    imageUrl: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&h=400&fit=crop&crop=center&auto=format&q=80'
+    imageUrl: '' // Will be set dynamically
   },
   {
     lat: -33.8688,
@@ -54,7 +55,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     region: 'New South Wales',
     country: 'Australia',
     continent: 'Oceania',
-    imageUrl: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=600&h=400&fit=crop&crop=center&auto=format&q=80'
+    imageUrl: '' // Will be set dynamically
   },
   {
     lat: -22.9068,
@@ -63,7 +64,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     region: 'Rio de Janeiro',
     country: 'Brazil',
     continent: 'South America',
-    imageUrl: 'https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=600&h=400&fit=crop&crop=center&auto=format&q=80'
+    imageUrl: '' // Will be set dynamically
   },
   {
     lat: 30.0444,
@@ -72,13 +73,96 @@ const SAMPLE_LOCATIONS: Location[] = [
     region: 'Cairo',
     country: 'Egypt',
     continent: 'Africa',
-    imageUrl: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=600&h=400&fit=crop&crop=center&auto=format&q=80'
+    imageUrl: '' // Will be set dynamically
+  },
+  // Adding more locations for variety
+  {
+    lat: 52.5200,
+    lng: 13.4050,
+    city: 'Berlin',
+    region: 'Berlin',
+    country: 'Germany',
+    continent: 'Europe',
+    imageUrl: '' // Will be set dynamically
+  },
+  {
+    lat: 41.9028,
+    lng: 12.4964,
+    city: 'Rome',
+    region: 'Lazio',
+    country: 'Italy',
+    continent: 'Europe',
+    imageUrl: '' // Will be set dynamically
+  },
+  {
+    lat: 37.7749,
+    lng: -122.4194,
+    city: 'San Francisco',
+    region: 'California',
+    country: 'United States',
+    continent: 'North America',
+    imageUrl: '' // Will be set dynamically
+  },
+  {
+    lat: 25.7617,
+    lng: -80.1918,
+    city: 'Miami',
+    region: 'Florida',
+    country: 'United States',
+    continent: 'North America',
+    imageUrl: '' // Will be set dynamically
+  },
+  {
+    lat: 55.7558,
+    lng: 37.6176,
+    city: 'Moscow',
+    region: 'Moscow',
+    country: 'Russia',
+    continent: 'Europe',
+    imageUrl: '' // Will be set dynamically
+  },
+  {
+    lat: 39.9042,
+    lng: 116.4074,
+    city: 'Beijing',
+    region: 'Beijing',
+    country: 'China',
+    continent: 'Asia',
+    imageUrl: '' // Will be set dynamically
+  },
+  {
+    lat: 19.0760,
+    lng: 72.8777,
+    city: 'Mumbai',
+    region: 'Maharashtra',
+    country: 'India',
+    continent: 'Asia',
+    imageUrl: '' // Will be set dynamically
+  },
+  {
+    lat: -26.2041,
+    lng: 28.0473,
+    city: 'Johannesburg',
+    region: 'Gauteng',
+    country: 'South Africa',
+    continent: 'Africa',
+    imageUrl: '' // Will be set dynamically
   }
 ];
 
-export const getRandomLocation = (): Location => {
+export const getRandomLocation = async (): Promise<Location> => {
   const randomIndex = Math.floor(Math.random() * SAMPLE_LOCATIONS.length);
-  return SAMPLE_LOCATIONS[randomIndex];
+  const location = SAMPLE_LOCATIONS[randomIndex];
+  
+  // Generate Google Street View image URL
+  try {
+    const imageUrl = await placesApiService.getStreetViewImage(location.lat, location.lng);
+    return { ...location, imageUrl };
+  } catch (error) {
+    console.error('Failed to get Street View image:', error);
+    // Fallback to a default image if Street View fails
+    return { ...location, imageUrl: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop&crop=center&auto=format&q=80' };
+  }
 };
 
 export const generateHint = (stage: GameStage, correctAnswer: string, currentLocation: Location): Hint => {
@@ -104,30 +188,40 @@ export const generateHint = (stage: GameStage, correctAnswer: string, currentLoc
     case 'region':
       // Use regions from the same country
       const countryRegions = {
-        'United States': ['California', 'Texas', 'Florida', 'New York', 'Illinois'],
-        'Australia': ['New South Wales', 'Victoria', 'Queensland', 'Western Australia', 'South Australia'],
-        'United Kingdom': ['England', 'Scotland', 'Wales', 'Northern Ireland', 'Channel Islands'],
-        'France': ['Île-de-France', 'Provence-Alpes-Côte d\'Azur', 'Occitanie', 'Nouvelle-Aquitaine', 'Auvergne-Rhône-Alpes'],
-        'Japan': ['Tokyo', 'Osaka', 'Kyoto', 'Hokkaido', 'Fukuoka'],
-        'Brazil': ['São Paulo', 'Rio de Janeiro', 'Minas Gerais', 'Bahia', 'Paraná'],
-        'Egypt': ['Cairo', 'Alexandria', 'Giza', 'Luxor', 'Aswan']
+        'United States': ['California', 'Texas', 'Florida', 'New York', 'Illinois', 'Pennsylvania', 'Ohio', 'Georgia', 'North Carolina', 'Michigan'],
+        'Australia': ['New South Wales', 'Victoria', 'Queensland', 'Western Australia', 'South Australia', 'Tasmania', 'Australian Capital Territory', 'Northern Territory'],
+        'United Kingdom': ['England', 'Scotland', 'Wales', 'Northern Ireland', 'Channel Islands', 'Isle of Man'],
+        'France': ['Île-de-France', 'Provence-Alpes-Côte d\'Azur', 'Occitanie', 'Nouvelle-Aquitaine', 'Auvergne-Rhône-Alpes', 'Bourgogne-Franche-Comté', 'Centre-Val de Loire', 'Corse', 'Grand Est', 'Hauts-de-France', 'Normandie', 'Pays de la Loire'],
+        'Japan': ['Tokyo', 'Osaka', 'Kyoto', 'Hokkaido', 'Fukuoka', 'Aichi', 'Kanagawa', 'Saitama', 'Chiba', 'Hyogo'],
+        'Brazil': ['São Paulo', 'Rio de Janeiro', 'Minas Gerais', 'Bahia', 'Paraná', 'Rio Grande do Sul', 'Pernambuco', 'Ceará', 'Pará', 'Santa Catarina'],
+        'Egypt': ['Cairo', 'Alexandria', 'Giza', 'Luxor', 'Aswan', 'Sharm El Sheikh', 'Hurghada', 'Dahab', 'Siwa', 'Marsa Alam'],
+        'Germany': ['Berlin', 'Bavaria', 'North Rhine-Westphalia', 'Baden-Württemberg', 'Lower Saxony', 'Hesse', 'Rhineland-Palatinate', 'Saxony', 'Thuringia', 'Brandenburg'],
+        'Italy': ['Lazio', 'Lombardy', 'Campania', 'Sicily', 'Piedmont', 'Veneto', 'Puglia', 'Emilia-Romagna', 'Tuscany', 'Calabria'],
+        'China': ['Beijing', 'Shanghai', 'Guangdong', 'Jiangsu', 'Shandong', 'Henan', 'Sichuan', 'Hunan', 'Hebei', 'Anhui'],
+        'India': ['Maharashtra', 'Delhi', 'Karnataka', 'Tamil Nadu', 'Telangana', 'West Bengal', 'Gujarat', 'Uttar Pradesh', 'Rajasthan', 'Madhya Pradesh'],
+        'South Africa': ['Gauteng', 'Western Cape', 'KwaZulu-Natal', 'Eastern Cape', 'Free State', 'Mpumalanga', 'Limpopo', 'North West', 'Northern Cape']
       };
       options = countryRegions[currentLocation.country as keyof typeof countryRegions] || 
-                ['California', 'New South Wales', 'England', 'Île-de-France', 'Tokyo'];
+                ['California', 'New South Wales', 'England', 'Île-de-France', 'Tokyo', 'Berlin', 'Lazio', 'Beijing', 'Maharashtra', 'Gauteng'];
       break;
     case 'city':
       // Use cities from the same country
       const countryCities = {
-        'United States': ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix'],
-        'Australia': ['Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaide'],
-        'United Kingdom': ['London', 'Manchester', 'Birmingham', 'Liverpool', 'Leeds'],
-        'France': ['Paris', 'Marseille', 'Lyon', 'Toulouse', 'Nice'],
-        'Japan': ['Tokyo', 'Osaka', 'Kyoto', 'Yokohama', 'Nagoya'],
-        'Brazil': ['São Paulo', 'Rio de Janeiro', 'Brasília', 'Salvador', 'Fortaleza'],
-        'Egypt': ['Cairo', 'Alexandria', 'Giza', 'Luxor', 'Aswan']
+        'United States': ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'San Francisco', 'Miami', 'Philadelphia', 'San Antonio', 'San Diego'],
+        'Australia': ['Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaide', 'Gold Coast', 'Newcastle', 'Canberra', 'Sunshine Coast', 'Wollongong'],
+        'United Kingdom': ['London', 'Manchester', 'Birmingham', 'Liverpool', 'Leeds', 'Sheffield', 'Edinburgh', 'Bristol', 'Glasgow', 'Leicester'],
+        'France': ['Paris', 'Marseille', 'Lyon', 'Toulouse', 'Nice', 'Nantes', 'Strasbourg', 'Montpellier', 'Bordeaux', 'Lille'],
+        'Japan': ['Tokyo', 'Osaka', 'Kyoto', 'Yokohama', 'Nagoya', 'Sapporo', 'Kobe', 'Fukuoka', 'Kawasaki', 'Saitama'],
+        'Brazil': ['São Paulo', 'Rio de Janeiro', 'Brasília', 'Salvador', 'Fortaleza', 'Belo Horizonte', 'Manaus', 'Curitiba', 'Recife', 'Porto Alegre'],
+        'Egypt': ['Cairo', 'Alexandria', 'Giza', 'Luxor', 'Aswan', 'Sharm El Sheikh', 'Hurghada', 'Dahab', 'Siwa', 'Marsa Alam'],
+        'Germany': ['Berlin', 'Hamburg', 'Munich', 'Cologne', 'Frankfurt', 'Stuttgart', 'Düsseldorf', 'Dortmund', 'Essen', 'Leipzig'],
+        'Italy': ['Rome', 'Milan', 'Naples', 'Turin', 'Palermo', 'Genoa', 'Bologna', 'Florence', 'Bari', 'Catania'],
+        'China': ['Beijing', 'Shanghai', 'Guangzhou', 'Shenzhen', 'Chengdu', 'Tianjin', 'Chongqing', 'Nanjing', 'Wuhan', 'Xi\'an'],
+        'India': ['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Kolkata', 'Pune', 'Ahmedabad', 'Surat', 'Jaipur'],
+        'South Africa': ['Johannesburg', 'Cape Town', 'Durban', 'Pretoria', 'Port Elizabeth', 'Bloemfontein', 'East London', 'Kimberley', 'Nelspruit', 'Polokwane']
       };
       options = countryCities[currentLocation.country as keyof typeof countryCities] || 
-                ['New York', 'Sydney', 'London', 'Paris', 'Tokyo'];
+                ['New York', 'Sydney', 'London', 'Paris', 'Tokyo', 'Berlin', 'Rome', 'Beijing', 'Mumbai', 'Johannesburg'];
       break;
   }
   
