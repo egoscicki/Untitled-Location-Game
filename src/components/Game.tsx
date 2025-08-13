@@ -230,13 +230,13 @@ const Game: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="min-h-screen">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
+          className="text-center mb-8 pt-4"
         >
           <h1 className="text-4xl font-bold text-white mb-2">Wherzit</h1>
           <p className="text-white/80 text-lg">Guess the location from the image!</p>
@@ -254,7 +254,7 @@ const Game: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="game-container p-6 mb-6"
+          className="game-container p-6 mb-6 mx-4"
         >
           {/* Location Image */}
           <LocationImage
