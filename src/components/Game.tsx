@@ -268,8 +268,8 @@ const Game: React.FC = () => {
             className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50"
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
           >
-            <div className="bg-purple-50/90 backdrop-blur-sm rounded-2xl px-12 py-4 shadow-2xl border border-purple-200/50">
-              <p className="text-gray-800 font-semibold text-lg text-center">{message}</p>
+            <div className="bg-purple-50/90 backdrop-blur-sm rounded-2xl px-20 py-4 shadow-2xl border border-purple-200/50 min-w-[400px] max-w-[600px]">
+              <p className="text-gray-800 font-semibold text-lg text-center leading-tight">{message}</p>
             </div>
           </motion.div>
         )}
