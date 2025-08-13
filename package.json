@@ -2,7 +2,7 @@
   "name": "place-guesser",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://egoscicki.github.io/Untitled-Location-Game",
+  "homepage": ".",
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.10",
     "@testing-library/dom": "^10.4.1",
