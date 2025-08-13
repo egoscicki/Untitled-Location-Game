@@ -38,7 +38,7 @@ const GuessInput: React.FC<GuessInputProps> = ({
   const getStageLabel = (stage: GameStage): string => {
     switch (stage) {
       case 'continent':
-        return 'Which continent is this location in?';
+        return 'Guess the continent';
       case 'country':
         return 'Which country is this location in?';
       case 'region':
