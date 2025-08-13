@@ -19,9 +19,10 @@ An interactive geography guessing game where players identify locations from Str
 
 ### Installation
 
-1. **Clone and install dependencies:**
+1. **Clone the repository:**
    ```bash
-   cd place-guesser
+   git clone https://github.com/egoscicki/Untitled-Location-Game.git
+   cd Untitled-Location-Game
    npm install
    ```
 
