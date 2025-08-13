@@ -11,13 +11,20 @@ const LocationImage: React.FC<LocationImageProps> = ({ imageUrl, city }) => {
   const [hasError, setHasError] = useState(false);
 
   const handleImageLoad = () => {
+    console.log('✅ Image loaded successfully:', imageUrl);
     setIsLoading(false);
+    setHasError(false);
   };
 
-  const handleImageError = () => {
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    console.error('❌ Image failed to load:', imageUrl);
+    console.error('Error details:', e);
     setIsLoading(false);
     setHasError(true);
   };
+
+  // Log when component mounts
+  console.log('🖼️ Attempting to load image for', city, ':', imageUrl);
 
   if (hasError) {
     return (
@@ -26,6 +33,15 @@ const LocationImage: React.FC<LocationImageProps> = ({ imageUrl, city }) => {
           <div className="text-6xl mb-4">🌍</div>
           <p className="text-gray-600 text-lg">Image unavailable</p>
           <p className="text-gray-500 text-sm">Location: {city}</p>
+          <div className="mt-4 text-xs text-gray-500">
+            <p>URL: {imageUrl}</p>
+            <button 
+              onClick={() => window.open(imageUrl, '_blank')}
+              className="mt-2 text-blue-600 hover:underline"
+            >
+              Test URL in new tab
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -48,7 +64,7 @@ const LocationImage: React.FC<LocationImageProps> = ({ imageUrl, city }) => {
       
       <motion.img
         src={imageUrl}
-        alt={`Street view of ${city}`}
+        alt={`Location image`}
         className="location-image w-full h-96 object-cover"
         onLoad={handleImageLoad}
         onError={handleImageError}

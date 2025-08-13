@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GameStage, Location, CONTINENTS, US_STATES } from '../types/game';
+import { GameStage, Location, CONTINENTS } from '../types/game';
 import { placesApiService } from '../services/placesApi';
 
 interface GuessInputProps {
@@ -43,25 +43,26 @@ const GuessInput: React.FC<GuessInputProps> = ({
 
   const getInputType = (stage: GameStage): 'dropdown' | 'autocomplete' => {
     if (stage === 'continent') return 'dropdown';
-    if (stage === 'state') return 'dropdown';
     return 'autocomplete';
   };
 
   const getOptions = (stage: GameStage): string[] => {
     if (stage === 'continent') return [...CONTINENTS];
-    if (stage === 'state') return [...US_STATES];
     return [];
   };
 
   const handleInputChange = async (value: string) => {
     setInputValue(value);
     
-    if (getInputType(currentStage) === 'autocomplete' && value.length > 2) {
+    if (getInputType(currentStage) === 'autocomplete' && value.length > 1) {
       try {
         let newSuggestions: string[] = [];
         
         if (currentStage === 'country') {
           newSuggestions = await placesApiService.getCountrySuggestions(value);
+        } else if (currentStage === 'state') {
+          // Get US state suggestions
+          newSuggestions = await placesApiService.getStateSuggestions(value);
         } else if (currentStage === 'city') {
           const country = currentLocation?.country || '';
           newSuggestions = await placesApiService.getCitySuggestions(value, country);
@@ -71,6 +72,8 @@ const GuessInput: React.FC<GuessInputProps> = ({
         setShowSuggestions(true);
       } catch (error) {
         console.error('Error getting suggestions:', error);
+        setSuggestions([]);
+        setShowSuggestions(false);
       }
     } else {
       setShowSuggestions(false);

@@ -1,6 +1,6 @@
 import { Location, GameStage, GuessResult, SCORING } from '../types/game';
 
-// Sample locations for prototype (in production, these would come from a database)
+// Sample locations with reliable placeholder images
 const SAMPLE_LOCATIONS: Location[] = [
   {
     lat: 40.7128,
@@ -9,7 +9,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     state: 'New York',
     country: 'United States',
     continent: 'North America',
-    imageUrl: 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=40.7128,-74.0060&key=AIzaSyBXq48NTHs4zGSM303QTv9K72s_Yve6qBo'
+    imageUrl: 'https://picsum.photos/600/400?random=1'
   },
   {
     lat: 34.0522,
@@ -18,7 +18,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     state: 'California',
     country: 'United States',
     continent: 'North America',
-    imageUrl: 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=34.0522,-118.2437&key=AIzaSyBXq48NTHs4zGSM303QTv9K72s_Yve6qBo'
+    imageUrl: 'https://picsum.photos/600/400?random=2'
   },
   {
     lat: 51.5074,
@@ -27,7 +27,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     state: 'England',
     country: 'United Kingdom',
     continent: 'Europe',
-    imageUrl: 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=51.5074,-0.1278&key=AIzaSyBXq48NTHs4zGSM303QTv9K72s_Yve6qBo'
+    imageUrl: 'https://picsum.photos/600/400?random=3'
   },
   {
     lat: 48.8566,
@@ -36,7 +36,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     state: 'Île-de-France',
     country: 'France',
     continent: 'Europe',
-    imageUrl: 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=48.8566,2.3522&key=AIzaSyBXq48NTHs4zGSM303QTv9K72s_Yve6qBo'
+    imageUrl: 'https://picsum.photos/600/400?random=4'
   },
   {
     lat: 35.6762,
@@ -45,7 +45,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     state: 'Tokyo',
     country: 'Japan',
     continent: 'Asia',
-    imageUrl: 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=35.6762,139.6503&key=AIzaSyBXq48NTHs4zGSM303QTv9K72s_Yve6qBo'
+    imageUrl: 'https://picsum.photos/600/400?random=5'
   },
   {
     lat: -33.8688,
@@ -54,7 +54,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     state: 'New South Wales',
     country: 'Australia',
     continent: 'Oceania',
-    imageUrl: 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=-33.8688,151.2093&key=AIzaSyBXq48NTHs4zGSM303QTv9K72s_Yve6qBo'
+    imageUrl: 'https://picsum.photos/600/400?random=6'
   },
   {
     lat: -22.9068,
@@ -63,7 +63,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     state: 'Rio de Janeiro',
     country: 'Brazil',
     continent: 'South America',
-    imageUrl: 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=-22.9068,-43.1729&key=AIzaSyBXq48NTHs4zGSM303QTv9K72s_Yve6qBo'
+    imageUrl: 'https://picsum.photos/600/400?random=7'
   },
   {
     lat: 30.0444,
@@ -72,7 +72,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     state: 'Cairo',
     country: 'Egypt',
     continent: 'Africa',
-    imageUrl: 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=30.0444,31.2357&key=AIzaSyBXq48NTHs4zGSM303QTv9K72s_Yve6qBo'
+    imageUrl: 'https://picsum.photos/600/400?random=8'
   }
 ];
 

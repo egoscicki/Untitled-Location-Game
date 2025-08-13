@@ -15,6 +15,20 @@ class PlacesApiService {
   private autocompleteService: google.maps.places.AutocompleteService | null = null;
   private placesService: google.maps.places.PlacesService | null = null;
 
+  // US States for autocomplete
+  private usStates = [
+    'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
+    'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia',
+    'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
+    'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland',
+    'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri',
+    'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey',
+    'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio',
+    'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina',
+    'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
+    'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+  ];
+
   constructor() {
     // Using the provided API key
     this.apiKey = 'AIzaSyBXq48NTHs4zGSM303QTv9K72s_Yve6qBo';
@@ -58,6 +72,14 @@ class PlacesApiService {
       console.error('Error getting country suggestions:', error);
       return [];
     }
+  }
+
+  async getStateSuggestions(input: string): Promise<string[]> {
+    // Filter US states based on input
+    const normalizedInput = input.toLowerCase();
+    return this.usStates.filter(state => 
+      state.toLowerCase().includes(normalizedInput)
+    ).slice(0, 10); // Limit to 10 suggestions
   }
 
   async getCitySuggestions(input: string, country?: string): Promise<string[]> {
