@@ -157,18 +157,10 @@ export const getRandomLocation = async (): Promise<Location> => {
   console.log('🎯 Getting random location:', location.city, location.country);
   
   // Generate Google Street View image URL
-  try {
-    console.log('🖼️ Attempting to get Street View image for:', location.lat, location.lng);
-    const imageUrl = await placesApiService.getStreetViewImage(location.lat, location.lng);
-    console.log('✅ Street View image URL generated:', imageUrl);
-    return { ...location, imageUrl };
-  } catch (error) {
-    console.error('❌ Failed to get Street View image:', error);
-    // Fallback to a default image if Street View fails
-    const fallbackUrl = 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop&crop=center&auto=format&q=80';
-    console.log('🔄 Using fallback image:', fallbackUrl);
-    return { ...location, imageUrl: fallbackUrl };
-  }
+  console.log('🖼️ Attempting to get Street View image for:', location.lat, location.lng);
+  const imageUrl = await placesApiService.getStreetViewImage(location.lat, location.lng);
+  console.log('✅ Street View image URL generated:', imageUrl);
+  return { ...location, imageUrl };
 };
 
 export const generateHint = (stage: GameStage, correctAnswer: string, currentLocation: Location): Hint => {

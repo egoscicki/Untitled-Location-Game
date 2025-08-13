@@ -121,26 +121,12 @@ class PlacesApiService {
   }
 
   async getStreetViewImage(lat: number, lng: number, size: string = '600x400'): Promise<string> {
-    try {
-      // Return actual Street View image URL with the API key
-      const imageUrl = `https://maps.googleapis.com/maps/api/streetview?size=${size}&location=${lat},${lng}&key=${this.apiKey}`;
-      
-      // Test if the image loads
-      const testImage = new Image();
-      await new Promise((resolve, reject) => {
-        testImage.onload = resolve;
-        testImage.onerror = reject;
-        testImage.src = imageUrl;
-        // Timeout after 5 seconds
-        setTimeout(() => reject(new Error('Image load timeout')), 5000);
-      });
-      
-      return imageUrl;
-    } catch (error) {
-      console.error('Street View image failed to load:', error);
-      // Fallback to a default landscape image
-      return 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop&crop=center&auto=format&q=80';
-    }
+    // Return actual Street View image URL with the API key
+    // This should work if the API key has the right permissions
+    const imageUrl = `https://maps.googleapis.com/maps/api/streetview?size=${size}&location=${lat},${lng}&key=${this.apiKey}&heading=0&pitch=0&fov=90`;
+    
+    console.log('🖼️ Generated Street View URL:', imageUrl);
+    return imageUrl;
   }
 }
 
