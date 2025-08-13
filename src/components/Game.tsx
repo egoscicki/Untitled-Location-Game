@@ -238,7 +238,7 @@ const Game: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <h1 className="text-4xl font-bold text-white mb-2">Wherizit</h1>
+          <h1 className="text-4xl font-bold text-white mb-2">Wherzit</h1>
           <p className="text-white/80 text-lg">Guess the location from the image!</p>
         </motion.div>
 
@@ -249,21 +249,6 @@ const Game: React.FC = () => {
           currentStage={gameState.currentStage}
           hintsUsed={gameState.hintsUsed}
         />
-
-        {/* Temporary Audio Test Button - Remove after debugging */}
-        <div className="text-center mb-4">
-          <button
-            onClick={() => {
-              console.log('🎵 Testing audio...');
-              correctAudio.play();
-              setTimeout(() => incorrectAudio.play(), 1000);
-              setTimeout(() => stageAudio.play(), 2000);
-            }}
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-600 transition-colors"
-          >
-            🎵 Test Audio
-          </button>
-        </div>
 
         {/* Game Container */}
         <motion.div
