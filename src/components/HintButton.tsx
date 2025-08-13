@@ -30,7 +30,7 @@ interface HintButtonProps {
   currentLocation: Location | null;
   hintsUsed: number;
   onHintUsed: () => void;
-  onHintSelected: (hint: string) => void; // New prop to communicate with parent
+  onHintSelected: (hint: string) => void; // This will now auto-submit the guess
 }
 
 const HintButton: React.FC<HintButtonProps> = ({
@@ -106,8 +106,8 @@ const HintButton: React.FC<HintButtonProps> = ({
     options = options.filter(option => option !== correctAnswer);
     options = shuffleArray(options);
     
-    // Take first 4 wrong options and add correct answer
-    const wrongOptions = options.slice(0, 4);
+    // Take first 3 wrong options and add correct answer (total of 4)
+    const wrongOptions = options.slice(0, 3);
     const allOptions = [...wrongOptions, correctAnswer];
     
     // Shuffle again so correct answer isn't always last
@@ -127,7 +127,8 @@ const HintButton: React.FC<HintButtonProps> = ({
 
   const handleOptionClick = (option: string) => {
     setShowHint(false);
-    onHintSelected(option); // Send the selected hint to parent component
+    // Auto-submit the selected hint instead of just prepopulating
+    onHintSelected(option);
   };
 
   const remainingHints = MAX_HINTS - hintsUsed;
@@ -152,24 +153,25 @@ const HintButton: React.FC<HintButtonProps> = ({
             initial={{ opacity: 0, scale: 0.9, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: -10 }}
-            className="absolute top-full mt-2 left-0 right-0 z-20 bg-white border border-gray-300 rounded-lg shadow-lg p-4"
+            className="absolute top-full mt-2 left-0 right-0 z-20 bg-white border border-gray-300 rounded-lg shadow-lg p-4 min-w-[300px]"
           >
-            <h4 className="font-semibold text-gray-800 mb-3">
+            <h4 className="font-semibold text-gray-800 mb-3 text-center">
               💡 Hint for {currentStage}:
             </h4>
-            <div className="space-y-2">
+            {/* 2x2 Grid Layout */}
+            <div className="grid grid-cols-2 gap-3">
               {hintOptions.map((option, index) => (
                 <button
                   key={index}
                   onClick={() => handleOptionClick(option)}
-                  className="w-full text-left px-3 py-2 bg-gray-50 hover:bg-gray-100 rounded-md transition-colors"
+                  className="px-4 py-3 bg-gray-50 hover:bg-gray-100 rounded-md transition-colors text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-200 hover:border-gray-300"
                 >
                   {option}
                 </button>
               ))}
             </div>
             <p className="text-xs text-gray-500 mt-3 text-center">
-              Click an option to auto-fill your guess!
+              Click an option to submit it as your guess!
             </p>
           </motion.div>
         )}

@@ -6,6 +6,7 @@ export interface Location {
   country: string;
   continent: string;
   imageUrl: string;
+  imageUrls?: string[]; // Optional array for carousel images
 }
 
 export interface GameState {

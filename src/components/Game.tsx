@@ -243,8 +243,7 @@ const Game: React.FC = () => {
         >
           {/* Location Image */}
           <LocationImage
-            imageUrl={gameState.currentLocation?.imageUrl || ''}
-            city={gameState.currentLocation?.city || ''}
+            location={gameState.currentLocation!}
           />
 
           {/* Hint Button */}

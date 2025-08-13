@@ -81,27 +81,32 @@ const getTrulyRandomIndex = (max: number): number => {
 };
 
 export const getRandomLocation = async (): Promise<Location> => {
+  // Occasionally shuffle the locations array to prevent patterns
   consecutiveCount++;
-  
-  // Force shuffle every 2 calls to prevent any patterns
-  if (consecutiveCount % 2 === 0) {
+  if (consecutiveCount % 2 === 0) { // Shuffle every 2 calls instead of 5
     shuffleArray(BASE_LOCATIONS);
-    console.log('🔄 Forced shuffle every 2 calls to prevent patterns');
+    console.log('🔄 Shuffled locations array to prevent patterns');
   }
   
+  // Use a more robust random number generation
   const randomIndex = getTrulyRandomIndex(BASE_LOCATIONS.length);
   const location = BASE_LOCATIONS[randomIndex];
+  
+  // Generate 3 different Street View images for carousel
+  const imageUrls: string[] = [];
+  
+  for (let i = 0; i < 3; i++) {
+    const { lat, lng } = getRandomizedCoordinates(location.baseLat, location.baseLng);
+    const imageUrl = await placesApiService.getStreetViewImage(lat, lng, '600x400', i);
+    imageUrls.push(imageUrl);
+  }
   
   const { lat, lng } = getRandomizedCoordinates(location.baseLat, location.baseLng);
   
   console.log('🎯 Selected location:', location.city, location.country);
   console.log('📍 Total locations available:', BASE_LOCATIONS.length);
   console.log('🔄 Consecutive count:', consecutiveCount);
-  
-  // Generate Google Street View image URL
-  console.log('🖼️ Getting Street View image for:', lat, lng);
-  const imageUrl = await placesApiService.getStreetViewImage(lat, lng);
-  console.log('✅ Street View image URL generated:', imageUrl);
+  console.log('🖼️ Generated 3 Street View images for carousel');
   
   return {
     lat,
@@ -110,7 +115,8 @@ export const getRandomLocation = async (): Promise<Location> => {
     region: location.region,
     country: location.country,
     continent: location.continent,
-    imageUrl
+    imageUrl: imageUrls[0], // First image as default
+    imageUrls: imageUrls // All 3 images for carousel
   };
 };
 
