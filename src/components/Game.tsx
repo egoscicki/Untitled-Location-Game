@@ -197,6 +197,22 @@ const Game: React.FC = () => {
           hintsUsed={gameState.hintsUsed}
         />
 
+        {/* Message Display - Moved higher for better mobile visibility */}
+        <AnimatePresence>
+          {showMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="text-center mb-4"
+            >
+              <div className="bg-white/90 backdrop-blur-sm rounded-lg px-6 py-3 inline-block shadow-lg">
+                <p className="text-gray-800 font-medium">{message}</p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Game Container */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
@@ -231,22 +247,6 @@ const Game: React.FC = () => {
             />
           </div>
         </motion.div>
-
-        {/* Message Display */}
-        <AnimatePresence>
-          {showMessage && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="text-center"
-            >
-              <div className="bg-white/90 backdrop-blur-sm rounded-lg px-6 py-3 inline-block">
-                <p className="text-gray-800 font-medium">{message}</p>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Progress Indicator */}
         <motion.div
