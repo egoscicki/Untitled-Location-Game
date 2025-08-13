@@ -150,11 +150,36 @@ const SAMPLE_LOCATIONS: Location[] = [
   }
 ];
 
+// More robust random number generation
+const getRandomIndex = (max: number): number => {
+  // Use crypto.getRandomValues if available (more random than Math.random)
+  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+    const array = new Uint32Array(1);
+    crypto.getRandomValues(array);
+    return array[0] % max;
+  }
+  // Fallback to Math.random with additional entropy
+  return Math.floor(Math.random() * max);
+};
+
+// Keep track of how many times we've called this to occasionally shuffle
+let locationCallCount = 0;
+
 export const getRandomLocation = async (): Promise<Location> => {
-  const randomIndex = Math.floor(Math.random() * SAMPLE_LOCATIONS.length);
+  // Occasionally shuffle the locations array to prevent patterns
+  locationCallCount++;
+  if (locationCallCount % 5 === 0) { // Shuffle every 5 calls
+    shuffleArray(SAMPLE_LOCATIONS);
+    console.log('🔄 Shuffled locations array to prevent patterns');
+  }
+  
+  // Use a more robust random number generation
+  const randomIndex = getRandomIndex(SAMPLE_LOCATIONS.length);
   const location = SAMPLE_LOCATIONS[randomIndex];
   
+  console.log('🎲 Random index generated:', randomIndex);
   console.log('🎯 Getting random location:', location.city, location.country);
+  console.log('📍 Total locations available:', SAMPLE_LOCATIONS.length);
   
   // Generate Google Street View image URL
   console.log('🖼️ Attempting to get Street View image for:', location.lat, location.lng);
