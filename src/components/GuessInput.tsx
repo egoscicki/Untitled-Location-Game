@@ -138,7 +138,6 @@ const GuessInput: React.FC<GuessInputProps> = ({
           onChange={(e) => handleInputChange(e.target.value)}
           placeholder={`Enter ${currentStage}...`}
           className="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-colors"
-          autoFocus
         />
         
         {/* Suggestions dropdown */}

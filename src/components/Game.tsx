@@ -185,7 +185,7 @@ const Game: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <h1 className="text-4xl font-bold text-white mb-2">Place Guesser</h1>
+          <h1 className="text-4xl font-bold text-white mb-2">Eric's Dumb Place Game</h1>
           <p className="text-white/80 text-lg">Guess the location from the image!</p>
         </motion.div>
 

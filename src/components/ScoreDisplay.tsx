@@ -36,53 +36,53 @@ const ScoreDisplay: React.FC<ScoreDisplayProps> = ({ score, totalGuesses, curren
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="game-container p-4 mb-6"
+      className="game-container p-3 mb-4"
     >
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-4 gap-2">
         {/* Score */}
         <div className="text-center">
-          <div className="text-2xl font-bold score-display mb-1">
+          <div className="text-xl font-bold score-display mb-1">
             {formatScore(score)}
           </div>
-          <div className="text-sm text-gray-600">Total Score</div>
+          <div className="text-xs text-gray-600">Score</div>
         </div>
 
         {/* Guesses */}
         <div className="text-center">
-          <div className="text-2xl font-bold text-gray-800 mb-1">
+          <div className="text-xl font-bold text-gray-800 mb-1">
             {totalGuesses}/10
           </div>
-          <div className="text-sm text-gray-600">Guesses Used</div>
+          <div className="text-xs text-gray-600">Guesses</div>
         </div>
 
         {/* Hints Used */}
         <div className="text-center">
-          <div className="text-2xl font-bold text-yellow-600 mb-1">
+          <div className="text-xl font-bold text-yellow-600 mb-1">
             {hintsUsed}/3
           </div>
-          <div className="text-sm text-gray-600">Hints Used</div>
+          <div className="text-xs text-gray-600">Hints</div>
         </div>
 
         {/* Current Stage */}
         <div className="text-center">
-          <div className="text-2xl mb-1">
+          <div className="text-xl mb-1">
             {getStageIcon(currentStage)}
           </div>
-          <div className="text-sm text-gray-600 capitalize">
+          <div className="text-xs text-gray-600 capitalize">
             {currentStage}
           </div>
         </div>
       </div>
 
       {/* Progress Bar */}
-      <div className="mt-4">
+      <div className="mt-3">
         <div className="flex justify-between text-xs text-gray-600 mb-1">
           <span>Progress</span>
           <span>{Math.round(getStageProgress())}%</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
           <motion.div
-            className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full"
+            className="bg-gradient-to-r from-blue-500 to-green-600 h-2 rounded-full"
             initial={{ width: 0 }}
             animate={{ width: `${getStageProgress()}%` }}
             transition={{ duration: 0.5, ease: "easeOut" }}
@@ -90,8 +90,8 @@ const ScoreDisplay: React.FC<ScoreDisplayProps> = ({ score, totalGuesses, curren
         </div>
       </div>
 
-      {/* Stage Indicators */}
-      <div className="mt-4 flex justify-center space-x-2">
+      {/* Stage Indicators - Hidden on mobile to save space */}
+      <div className="hidden md:flex mt-3 justify-center space-x-2">
         {['continent', 'country', 'region', 'city'].map((stage, index) => (
           <div
             key={stage}
