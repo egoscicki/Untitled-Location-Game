@@ -121,11 +121,27 @@ class PlacesApiService {
   }
 
   async getStreetViewImage(lat: number, lng: number, size: string = '600x400'): Promise<string> {
-    // Return actual Street View image URL with the API key
-    // This should work if the API key has the right permissions
-    const imageUrl = `https://maps.googleapis.com/maps/api/streetview?size=${size}&location=${lat},${lng}&key=${this.apiKey}&heading=0&pitch=0&fov=90`;
+    // Add randomization to coordinates to get different images
+    // Small random offset (±0.001 degrees = roughly ±100 meters)
+    const latOffset = (Math.random() - 0.5) * 0.002;
+    const lngOffset = (Math.random() - 0.5) * 0.002;
     
+    const randomizedLat = lat + latOffset;
+    const randomizedLng = lng + lngOffset;
+    
+    // Randomize Street View parameters for variety
+    const randomHeading = Math.floor(Math.random() * 360); // 0-359 degrees
+    const randomPitch = Math.floor((Math.random() - 0.5) * 20); // -10 to +10 degrees
+    const randomFov = 60 + Math.floor(Math.random() * 60); // 60-120 degrees
+    
+    // Return actual Street View image URL with randomized parameters
+    const imageUrl = `https://maps.googleapis.com/maps/api/streetview?size=${size}&location=${randomizedLat.toFixed(6)},${randomizedLng.toFixed(6)}&key=${this.apiKey}&heading=${randomHeading}&pitch=${randomPitch}&fov=${randomFov}`;
+    
+    console.log('🖼️ Original coordinates:', lat, lng);
+    console.log('🎲 Randomized coordinates:', randomizedLat.toFixed(6), randomizedLng.toFixed(6));
+    console.log('🎯 Street View params - Heading:', randomHeading, 'Pitch:', randomPitch, 'FOV:', randomFov);
     console.log('🖼️ Generated Street View URL:', imageUrl);
+    
     return imageUrl;
   }
 }

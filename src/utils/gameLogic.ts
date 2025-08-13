@@ -1,153 +1,36 @@
 import { Location, GameStage, GuessResult, SCORING, Hint } from '../types/game';
 import { placesApiService } from '../services/placesApi';
 
-// Sample locations with Google Street View images
-const SAMPLE_LOCATIONS: Location[] = [
-  {
-    lat: 40.7128,
-    lng: -74.0060,
-    city: 'New York',
-    region: 'New York',
-    country: 'United States',
-    continent: 'North America',
-    imageUrl: '' // Will be set dynamically
-  },
-  {
-    lat: 34.0522,
-    lng: -118.2437,
-    city: 'Los Angeles',
-    region: 'California',
-    country: 'United States',
-    continent: 'North America',
-    imageUrl: '' // Will be set dynamically
-  },
-  {
-    lat: 51.5074,
-    lng: -0.1278,
-    city: 'London',
-    region: 'England',
-    country: 'United Kingdom',
-    continent: 'Europe',
-    imageUrl: '' // Will be set dynamically
-  },
-  {
-    lat: 48.8566,
-    lng: 2.3522,
-    city: 'Paris',
-    region: 'Île-de-France',
-    country: 'France',
-    continent: 'Europe',
-    imageUrl: '' // Will be set dynamically
-  },
-  {
-    lat: 35.6762,
-    lng: 139.6503,
-    city: 'Tokyo',
-    region: 'Tokyo',
-    country: 'Japan',
-    continent: 'Asia',
-    imageUrl: '' // Will be set dynamically
-  },
-  {
-    lat: -33.8688,
-    lng: 151.2093,
-    city: 'Sydney',
-    region: 'New South Wales',
-    country: 'Australia',
-    continent: 'Oceania',
-    imageUrl: '' // Will be set dynamically
-  },
-  {
-    lat: -22.9068,
-    lng: -43.1729,
-    city: 'Rio de Janeiro',
-    region: 'Rio de Janeiro',
-    country: 'Brazil',
-    continent: 'South America',
-    imageUrl: '' // Will be set dynamically
-  },
-  {
-    lat: 30.0444,
-    lng: 31.2357,
-    city: 'Cairo',
-    region: 'Cairo',
-    country: 'Egypt',
-    continent: 'Africa',
-    imageUrl: '' // Will be set dynamically
-  },
-  // Adding more locations for variety
-  {
-    lat: 52.5200,
-    lng: 13.4050,
-    city: 'Berlin',
-    region: 'Berlin',
-    country: 'Germany',
-    continent: 'Europe',
-    imageUrl: '' // Will be set dynamically
-  },
-  {
-    lat: 41.9028,
-    lng: 12.4964,
-    city: 'Rome',
-    region: 'Lazio',
-    country: 'Italy',
-    continent: 'Europe',
-    imageUrl: '' // Will be set dynamically
-  },
-  {
-    lat: 37.7749,
-    lng: -122.4194,
-    city: 'San Francisco',
-    region: 'California',
-    country: 'United States',
-    continent: 'North America',
-    imageUrl: '' // Will be set dynamically
-  },
-  {
-    lat: 25.7617,
-    lng: -80.1918,
-    city: 'Miami',
-    region: 'Florida',
-    country: 'United States',
-    continent: 'North America',
-    imageUrl: '' // Will be set dynamically
-  },
-  {
-    lat: 55.7558,
-    lng: 37.6176,
-    city: 'Moscow',
-    region: 'Moscow',
-    country: 'Russia',
-    continent: 'Europe',
-    imageUrl: '' // Will be set dynamically
-  },
-  {
-    lat: 39.9042,
-    lng: 116.4074,
-    city: 'Beijing',
-    region: 'Beijing',
-    country: 'China',
-    continent: 'Asia',
-    imageUrl: '' // Will be set dynamically
-  },
-  {
-    lat: 19.0760,
-    lng: 72.8777,
-    city: 'Mumbai',
-    region: 'Maharashtra',
-    country: 'India',
-    continent: 'Asia',
-    imageUrl: '' // Will be set dynamically
-  },
-  {
-    lat: -26.2041,
-    lng: 28.0473,
-    city: 'Johannesburg',
-    region: 'Gauteng',
-    country: 'South Africa',
-    continent: 'Africa',
-    imageUrl: '' // Will be set dynamically
-  }
+// Generate fresh random coordinates for each location
+const getRandomizedCoordinates = (baseLat: number, baseLng: number) => {
+  // Small random offset (±0.005 degrees = roughly ±500 meters)
+  const latOffset = (Math.random() - 0.5) * 0.01;
+  const lngOffset = (Math.random() - 0.5) * 0.01;
+  
+  return {
+    lat: baseLat + latOffset,
+    lng: baseLng + lngOffset
+  };
+};
+
+// Sample locations with base coordinates (will be randomized each time)
+const BASE_LOCATIONS = [
+  { baseLat: 40.7128, baseLng: -74.0060, city: 'New York', region: 'New York', country: 'United States', continent: 'North America' },
+  { baseLat: 34.0522, baseLng: -118.2437, city: 'Los Angeles', region: 'California', country: 'United States', continent: 'North America' },
+  { baseLat: 51.5074, baseLng: -0.1278, city: 'London', region: 'England', country: 'United Kingdom', continent: 'Europe' },
+  { baseLat: 48.8566, baseLng: 2.3522, city: 'Paris', region: 'Île-de-France', country: 'France', continent: 'Europe' },
+  { baseLat: 35.6762, baseLng: 139.6503, city: 'Tokyo', region: 'Tokyo', country: 'Japan', continent: 'Asia' },
+  { baseLat: -33.8688, baseLng: 151.2093, city: 'Sydney', region: 'New South Wales', country: 'Australia', continent: 'Oceania' },
+  { baseLat: -22.9068, baseLng: -43.1729, city: 'Rio de Janeiro', region: 'Rio de Janeiro', country: 'Brazil', continent: 'South America' },
+  { baseLat: 30.0444, baseLng: 31.2357, city: 'Cairo', region: 'Cairo', country: 'Egypt', continent: 'Africa' },
+  { baseLat: 52.5200, baseLng: 13.4050, city: 'Berlin', region: 'Berlin', country: 'Germany', continent: 'Europe' },
+  { baseLat: 41.9028, baseLng: 12.4964, city: 'Rome', region: 'Lazio', country: 'Italy', continent: 'Europe' },
+  { baseLat: 37.7749, baseLng: -122.4194, city: 'San Francisco', region: 'California', country: 'United States', continent: 'North America' },
+  { baseLat: 25.7617, baseLng: -80.1918, city: 'Miami', region: 'Florida', country: 'United States', continent: 'North America' },
+  { baseLat: 55.7558, baseLng: 37.6176, city: 'Moscow', region: 'Moscow', country: 'Russia', continent: 'Europe' },
+  { baseLat: 39.9042, baseLng: 116.4074, city: 'Beijing', region: 'Beijing', country: 'China', continent: 'Asia' },
+  { baseLat: 19.0760, baseLng: 72.8777, city: 'Mumbai', region: 'Maharashtra', country: 'India', continent: 'Asia' },
+  { baseLat: -26.2041, baseLng: 28.0473, city: 'Johannesburg', region: 'Gauteng', country: 'South Africa', continent: 'Africa' }
 ];
 
 // Completely rewritten randomization system
@@ -202,23 +85,33 @@ export const getRandomLocation = async (): Promise<Location> => {
   
   // Force shuffle every 2 calls to prevent any patterns
   if (consecutiveCount % 2 === 0) {
-    shuffleArray(SAMPLE_LOCATIONS);
+    shuffleArray(BASE_LOCATIONS);
     console.log('🔄 Forced shuffle every 2 calls to prevent patterns');
   }
   
-  const randomIndex = getTrulyRandomIndex(SAMPLE_LOCATIONS.length);
-  const location = SAMPLE_LOCATIONS[randomIndex];
+  const randomIndex = getTrulyRandomIndex(BASE_LOCATIONS.length);
+  const location = BASE_LOCATIONS[randomIndex];
+  
+  const { lat, lng } = getRandomizedCoordinates(location.baseLat, location.baseLng);
   
   console.log('🎯 Selected location:', location.city, location.country);
-  console.log('📍 Total locations available:', SAMPLE_LOCATIONS.length);
+  console.log('📍 Total locations available:', BASE_LOCATIONS.length);
   console.log('🔄 Consecutive count:', consecutiveCount);
   
   // Generate Google Street View image URL
-  console.log('🖼️ Getting Street View image for:', location.lat, location.lng);
-  const imageUrl = await placesApiService.getStreetViewImage(location.lat, location.lng);
+  console.log('🖼️ Getting Street View image for:', lat, lng);
+  const imageUrl = await placesApiService.getStreetViewImage(lat, lng);
   console.log('✅ Street View image URL generated:', imageUrl);
   
-  return { ...location, imageUrl };
+  return {
+    lat,
+    lng,
+    city: location.city,
+    region: location.region,
+    country: location.country,
+    continent: location.continent,
+    imageUrl
+  };
 };
 
 export const generateHint = (stage: GameStage, correctAnswer: string, currentLocation: Location): Hint => {
