@@ -109,7 +109,7 @@ const GameOver: React.FC<GameOverProps> = ({
           </h3>
           <div className="space-y-2 text-gray-700">
             <div><strong>City:</strong> {location.city}</div>
-            <div><strong>State:</strong> {location.state}</div>
+            <div><strong>Region:</strong> {location.region}</div>
             <div><strong>Country:</strong> {location.country}</div>
             <div><strong>Continent:</strong> {location.continent}</div>
           </div>
