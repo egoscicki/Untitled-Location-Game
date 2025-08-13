@@ -258,23 +258,18 @@ const Game: React.FC = () => {
         </motion.div>
       </div>
 
-      {/* Fixed Position Toaster - Appears in middle of screen */}
+      {/* Fixed Position Toaster - Appears in center of screen */}
       <AnimatePresence>
         {showMessage && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: -20 }}
-            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50"
-            style={{ 
-              width: 'min(calc(100vw - 32px), 400px)',
-              left: '50%',
-              top: '50%'
-            }}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none"
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
           >
-            <div className="bg-purple-50/90 backdrop-blur-sm rounded-2xl px-4 py-4 shadow-2xl border border-purple-200/50 w-full">
-              <p className="text-gray-800 font-semibold text-sm sm:text-base text-center leading-tight break-words px-2">{message}</p>
+            <div className="bg-purple-50/90 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-2xl border border-purple-200/50 max-w-[90vw] w-auto pointer-events-auto">
+              <p className="text-gray-800 font-semibold text-sm sm:text-base text-center leading-tight break-words">{message}</p>
             </div>
           </motion.div>
         )}
