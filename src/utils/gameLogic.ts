@@ -9,7 +9,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     state: 'New York',
     country: 'United States',
     continent: 'North America',
-    imageUrl: 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=40.7128,-74.0060&key=YOUR_API_KEY'
+    imageUrl: 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=40.7128,-74.0060&key=AIzaSyBXq48NTHs4zGSM303QTv9K72s_Yve6qBo'
   },
   {
     lat: 34.0522,
@@ -18,7 +18,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     state: 'California',
     country: 'United States',
     continent: 'North America',
-    imageUrl: 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=34.0522,-118.2437&key=YOUR_API_KEY'
+    imageUrl: 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=34.0522,-118.2437&key=AIzaSyBXq48NTHs4zGSM303QTv9K72s_Yve6qBo'
   },
   {
     lat: 51.5074,
@@ -27,7 +27,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     state: 'England',
     country: 'United Kingdom',
     continent: 'Europe',
-    imageUrl: 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=51.5074,-0.1278&key=YOUR_API_KEY'
+    imageUrl: 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=51.5074,-0.1278&key=AIzaSyBXq48NTHs4zGSM303QTv9K72s_Yve6qBo'
   },
   {
     lat: 48.8566,
@@ -36,7 +36,7 @@ const SAMPLE_LOCATIONS: Location[] = [
     state: 'Île-de-France',
     country: 'France',
     continent: 'Europe',
-    imageUrl: 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=48.8566,2.3522&key=YOUR_API_KEY'
+    imageUrl: 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=48.8566,2.3522&key=AIzaSyBXq48NTHs4zGSM303QTv9K72s_Yve6qBo'
   },
   {
     lat: 35.6762,
@@ -45,7 +45,34 @@ const SAMPLE_LOCATIONS: Location[] = [
     state: 'Tokyo',
     country: 'Japan',
     continent: 'Asia',
-    imageUrl: 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=35.6762,139.6503&key=YOUR_API_KEY'
+    imageUrl: 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=35.6762,139.6503&key=AIzaSyBXq48NTHs4zGSM303QTv9K72s_Yve6qBo'
+  },
+  {
+    lat: -33.8688,
+    lng: 151.2093,
+    city: 'Sydney',
+    state: 'New South Wales',
+    country: 'Australia',
+    continent: 'Oceania',
+    imageUrl: 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=-33.8688,151.2093&key=AIzaSyBXq48NTHs4zGSM303QTv9K72s_Yve6qBo'
+  },
+  {
+    lat: -22.9068,
+    lng: -43.1729,
+    city: 'Rio de Janeiro',
+    state: 'Rio de Janeiro',
+    country: 'Brazil',
+    continent: 'South America',
+    imageUrl: 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=-22.9068,-43.1729&key=AIzaSyBXq48NTHs4zGSM303QTv9K72s_Yve6qBo'
+  },
+  {
+    lat: 30.0444,
+    lng: 31.2357,
+    city: 'Cairo',
+    state: 'Cairo',
+    country: 'Egypt',
+    continent: 'Africa',
+    imageUrl: 'https://maps.googleapis.com/maps/api/streetview?size=600x400&location=30.0444,31.2357&key=AIzaSyBXq48NTHs4zGSM303QTv9K72s_Yve6qBo'
   }
 ];
 

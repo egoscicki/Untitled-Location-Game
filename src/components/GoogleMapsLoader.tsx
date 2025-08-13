@@ -14,7 +14,7 @@ const GoogleMapsLoader: React.FC<GoogleMapsLoaderProps> = ({ children, onLoad })
     const loadGoogleMaps = async () => {
       try {
         const loader = new Loader({
-          apiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || 'YOUR_API_KEY_HERE',
+          apiKey: 'AIzaSyBXq48NTHs4zGSM303QTv9K72s_Yve6qBo',
           version: 'weekly',
           libraries: ['places']
         });
