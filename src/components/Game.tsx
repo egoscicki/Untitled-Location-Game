@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GameState } from '../types/game';
 import { getRandomLocation, checkGuess, getNextStage, getGameStatus } from '../utils/gameLogic';
@@ -8,6 +8,29 @@ import GuessInput from './GuessInput';
 import ScoreDisplay from './ScoreDisplay';
 import GameOver from './GameOver';
 import HintButton from './HintButton';
+
+// Custom hook for audio management
+const useAudio = (src: string) => {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    if (src) {
+      audioRef.current = new Audio(src);
+      audioRef.current.volume = 0.6; // Set volume to 60%
+    }
+  }, [src]);
+
+  const play = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0; // Reset to beginning
+      audioRef.current.play().catch(error => {
+        console.log('Audio playback failed:', error);
+      });
+    }
+  };
+
+  return { play };
+};
 
 const Game: React.FC = () => {
   const [gameState, setGameState] = useState<GameState>({
@@ -29,6 +52,11 @@ const Game: React.FC = () => {
   const [message, setMessage] = useState<string>('');
   const [showMessage, setShowMessage] = useState<boolean>(false);
   const [hintValue, setHintValue] = useState<string>('');
+
+  // Audio hooks for various game events
+  const correctAudio = useAudio('/sounds/correct.mp3');
+  const incorrectAudio = useAudio('/sounds/incorrect.mp3');
+  const stageAudio = useAudio('/sounds/stage.mp3');
 
   useEffect(() => {
     initializeGame();
@@ -69,6 +97,13 @@ const Game: React.FC = () => {
 
     const result = checkGuess(currentStage, guess, correctAnswer, previousGuesses);
 
+    // Play appropriate audio based on result
+    if (result.isCorrect) {
+      correctAudio.play();
+    } else {
+      incorrectAudio.play();
+    }
+
     // Update guesses
     const newGuesses = {
       ...gameState.guesses,
@@ -94,6 +129,9 @@ const Game: React.FC = () => {
       const nextStage = getNextStage(currentStage);
       
       if (nextStage) {
+        // Play stage progression sound
+        stageAudio.play();
+        
         // Move to next stage
         setGameState(prev => ({
           ...prev,

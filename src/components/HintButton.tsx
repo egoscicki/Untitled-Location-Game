@@ -1,6 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GameStage, Location, MAX_HINTS } from '../types/game';
+
+// Custom hook for audio management
+const useAudio = (src: string) => {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    if (src) {
+      audioRef.current = new Audio(src);
+      audioRef.current.volume = 0.6; // Set volume to 60%
+    }
+  }, [src]);
+
+  const play = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0; // Reset to beginning
+      audioRef.current.play().catch(error => {
+        console.log('Audio playback failed:', error);
+      });
+    }
+  };
+
+  return { play };
+};
 
 interface HintButtonProps {
   currentStage: GameStage;
@@ -20,8 +43,14 @@ const HintButton: React.FC<HintButtonProps> = ({
   const [showHint, setShowHint] = useState(false);
   const [hintOptions, setHintOptions] = useState<string[]>([]);
 
+  // Audio hook for hint usage
+  const hintAudio = useAudio('/sounds/hint.mp3');
+
   const generateHint = (): void => {
     if (!currentLocation || hintsUsed >= MAX_HINTS) return;
+
+    // Play hint sound
+    hintAudio.play();
 
     let options: string[] = [];
     const correctAnswer = currentLocation[currentStage];

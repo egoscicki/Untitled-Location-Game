@@ -1,7 +1,30 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Location } from '../types/game';
 import { formatScore } from '../utils/gameLogic';
+
+// Custom hook for audio management
+const useAudio = (src: string) => {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    if (src) {
+      audioRef.current = new Audio(src);
+      audioRef.current.volume = 0.7; // Set volume to 70%
+    }
+  }, [src]);
+
+  const play = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0; // Reset to beginning
+      audioRef.current.play().catch(error => {
+        console.log('Audio playback failed:', error);
+      });
+    }
+  };
+
+  return { play };
+};
 
 interface GameOverProps {
   gameStatus: 'won' | 'lost';
@@ -17,6 +40,19 @@ const GameOver: React.FC<GameOverProps> = ({
   onPlayAgain
 }) => {
   const isWinner = gameStatus === 'won';
+  
+  // Audio hooks for win and lose sounds
+  const winAudio = useAudio('/sounds/win.mp3');
+  const loseAudio = useAudio('/sounds/lose.mp3');
+  
+  // Play appropriate sound when component mounts
+  useEffect(() => {
+    if (isWinner) {
+      winAudio.play();
+    } else {
+      loseAudio.play();
+    }
+  }, [isWinner, winAudio, loseAudio]);
   
   const getResultMessage = () => {
     if (isWinner) {
