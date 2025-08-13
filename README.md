@@ -1,46 +1,184 @@
-# Getting Started with Create React App
+# 🌍 Place Guesser
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+An interactive geography guessing game where players identify locations from Street View images. Players progress through increasingly specific guesses: continent → country → state → city, with a scoring system that rewards accuracy and speed.
 
-## Available Scripts
+## 🎮 Game Features
 
-In the project directory, you can run:
+- **Progressive Difficulty**: Start with continent, work your way to city
+- **Smart Scoring**: More points for correct guesses on the first try
+- **Google Places Integration**: Autocomplete suggestions for countries and cities
+- **Beautiful UI**: Smooth animations and responsive design
+- **Mobile Ready**: PWA-compatible for mobile app packaging
 
-### `npm start`
+## 🚀 Quick Start
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Prerequisites
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- Node.js 16+ and npm
+- Google Maps API key with Places and Street View APIs enabled
 
-### `npm test`
+### Installation
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. **Clone and install dependencies:**
+   ```bash
+   cd place-guesser
+   npm install
+   ```
 
-### `npm run build`
+2. **Set up Google Maps API:**
+   - Get your API key from [Google Cloud Console](https://console.cloud.google.com/)
+   - Enable Places API and Street View Static API
+   - Create a `.env` file in the root directory:
+     ```
+     REACT_APP_GOOGLE_MAPS_API_KEY=your_api_key_here
+     ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+3. **Start the development server:**
+   ```bash
+   npm start
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+4. **Open your browser:**
+   Navigate to `http://localhost:3000`
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 🎯 How to Play
 
-### `npm run eject`
+1. **View the Image**: A random Street View image from somewhere in the world appears
+2. **Guess Continent**: Select from 7 continents (dropdown)
+3. **Guess Country**: Type the country name (autocomplete suggestions)
+4. **Guess State**: Select US state (dropdown, US locations only)
+5. **Guess City**: Type the city name (autocomplete suggestions)
+6. **Score Points**: Get more points for correct guesses on the first try!
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Scoring System
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **Continent**: 10 points (first try) / 5 points (subsequent)
+- **Country**: 20 points (first try) / 10 points (subsequent)
+- **State**: 30 points (first try) / 15 points (subsequent)
+- **City**: 50 points (first try) / 25 points (subsequent)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+**Total possible score**: 110 points (all correct on first try)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## 🛠️ Development
 
-## Learn More
+### Project Structure
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+src/
+├── components/          # React components
+│   ├── Game.tsx        # Main game logic
+│   ├── LocationImage.tsx # Street View display
+│   ├── GuessInput.tsx  # Input handling
+│   ├── ScoreDisplay.tsx # Score and progress
+│   ├── GameOver.tsx    # End game screen
+│   └── GoogleMapsLoader.tsx # API initialization
+├── types/              # TypeScript interfaces
+│   └── game.ts         # Game state types
+├── utils/              # Game logic utilities
+│   └── gameLogic.ts    # Core game functions
+├── services/           # External API services
+│   └── placesApi.ts    # Google Places integration
+└── App.tsx             # Main application
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Available Scripts
+
+- `npm start` - Start development server
+- `npm run build` - Build for production
+- `npm test` - Run tests
+- `npm run eject` - Eject from Create React App
+
+## 📱 Mobile App Packaging
+
+This app is designed to be easily packaged as a mobile app:
+
+### PWA Features
+- Service worker ready
+- Responsive design
+- Offline capability (with proper caching)
+
+### Capacitor Integration
+```bash
+npm install @capacitor/core @capacitor/cli
+npx cap init
+npx cap add ios
+npx cap add android
+```
+
+## 🔧 Configuration
+
+### Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+REACT_APP_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+```
+
+### Google Maps API Requirements
+
+- **Places API**: For autocomplete suggestions
+- **Street View Static API**: For location images
+- **Maps JavaScript API**: For core functionality
+
+## 🎨 Customization
+
+### Adding New Locations
+
+Edit `src/utils/gameLogic.ts` to add more sample locations:
+
+```typescript
+const SAMPLE_LOCATIONS: Location[] = [
+  // Add your locations here
+  {
+    lat: 40.7128,
+    lng: -74.0060,
+    city: 'New York',
+    state: 'New York',
+    country: 'United States',
+    continent: 'North America',
+    imageUrl: 'your_street_view_url'
+  }
+];
+```
+
+### Styling
+
+The app uses Tailwind CSS with custom animations. Modify `src/index.css` and `tailwind.config.js` for styling changes.
+
+## 🚀 Deployment
+
+### Build for Production
+```bash
+npm run build
+```
+
+### Deploy to Netlify/Vercel
+- Connect your repository
+- Set build command: `npm run build`
+- Set publish directory: `build`
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 🆘 Support
+
+If you encounter issues:
+
+1. Check the browser console for errors
+2. Verify your Google Maps API key is correct
+3. Ensure all required APIs are enabled
+4. Check the [Issues](../../issues) page for known problems
+
+---
+
+**Happy Guessing! 🌍✨**
