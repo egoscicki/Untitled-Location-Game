@@ -67,7 +67,7 @@ const GameModeSelection: React.FC<GameModeSelectionProps> = ({ onGameModeSelecte
           transition={{ delay: 0.6 }}
           className="mt-8 text-white/80 text-sm space-y-2"
         >
-          <p><strong>United States:</strong> Start with state guessing, US locations only</p>
+          <p><strong>United States:</strong> US locations only</p>
           <p><strong>The World:</strong> Full game from continent to city</p>
         </motion.div>
       </motion.div>
