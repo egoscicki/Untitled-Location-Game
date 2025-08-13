@@ -155,7 +155,7 @@ const HintButton: React.FC<HintButtonProps> = ({
         disabled={remainingHints <= 0}
         className={`px-4 py-2 rounded-lg font-medium transition-colors ${
           remainingHints > 0
-            ? 'bg-yellow-500 text-white hover:bg-yellow-600'
+            ? 'bg-purple-700 text-white hover:bg-purple-800'
             : 'bg-gray-400 text-gray-600 cursor-not-allowed'
         }`}
       >

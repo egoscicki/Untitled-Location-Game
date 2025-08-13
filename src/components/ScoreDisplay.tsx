@@ -21,7 +21,7 @@ const ScoreDisplay: React.FC<ScoreDisplayProps> = ({ score, totalGuesses, curren
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm"
+      className="sticky top-0 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm mb-6"
     >
       <div className="game-container p-3">
         <div className="grid grid-cols-3 gap-2">
