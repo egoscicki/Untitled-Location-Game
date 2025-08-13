@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GameState } from '../types/game';
-import { getRandomLocation, checkGuess, getNextStage, getGameStatus } from '../utils/gameLogic';
+import { getRandomLocation, checkGuess, getNextStage } from '../utils/gameLogic';
 import { placesApiService } from '../services/placesApi';
 import LocationImage from './LocationImage';
 import GuessInput from './GuessInput';
@@ -156,27 +156,34 @@ const Game: React.FC = () => {
           totalGuesses: newTotalGuesses
         }));
       } else {
-        // Game won!
-        const finalGameStatus = getGameStatus('city', newTotalGuesses);
+        // Game won! User correctly guessed the city
         setGameState(prev => ({
           ...prev,
           guesses: newGuesses,
           score: newScore,
           totalGuesses: newTotalGuesses,
-          gameStatus: finalGameStatus
+          gameStatus: 'won'
         }));
       }
     } else {
-      // Check if game is lost
-      const gameStatus = getGameStatus(currentStage, newTotalGuesses);
-      
-      setGameState(prev => ({
-        ...prev,
-        guesses: newGuesses,
-        score: newScore,
-        totalGuesses: newTotalGuesses,
-        gameStatus
-      }));
+      // Check if game is lost due to too many guesses
+      if (newTotalGuesses >= 10) {
+        setGameState(prev => ({
+          ...prev,
+          guesses: newGuesses,
+          score: newScore,
+          totalGuesses: newTotalGuesses,
+          gameStatus: 'lost'
+        }));
+      } else {
+        // Continue playing
+        setGameState(prev => ({
+          ...prev,
+          guesses: newGuesses,
+          score: newScore,
+          totalGuesses: newTotalGuesses
+        }));
+      }
     }
   };
 

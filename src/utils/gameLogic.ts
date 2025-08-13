@@ -232,6 +232,16 @@ export const checkGuess = (
   const isCorrect = normalizedGuess === normalizedAnswer;
   const isFirstGuess = previousGuesses.length === 0;
   
+  // Add debugging for city validation
+  if (stage === 'city') {
+    console.log('🏙️ City validation:');
+    console.log('  User guess:', guess);
+    console.log('  Correct answer:', correctAnswer);
+    console.log('  Normalized guess:', normalizedGuess);
+    console.log('  Normalized answer:', normalizedAnswer);
+    console.log('  Is correct:', isCorrect);
+  }
+  
   let points = 0;
   let message = '';
   
