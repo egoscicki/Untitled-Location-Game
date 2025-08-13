@@ -16,7 +16,7 @@ const Game: React.FC = () => {
     guesses: {
       continent: [],
       country: [],
-      state: [],
+      region: [],
       city: []
     },
     totalGuesses: 0,
@@ -28,6 +28,7 @@ const Game: React.FC = () => {
 
   const [message, setMessage] = useState<string>('');
   const [showMessage, setShowMessage] = useState<boolean>(false);
+  const [hintValue, setHintValue] = useState<string>('');
 
   useEffect(() => {
     initializeGame();
@@ -55,6 +56,10 @@ const Game: React.FC = () => {
     }));
   };
 
+  const handleHintSelected = (hint: string) => {
+    setHintValue(hint);
+  };
+
   const handleGuess = async (guess: string) => {
     if (!gameState.currentLocation) return;
 
@@ -80,6 +85,9 @@ const Game: React.FC = () => {
     setMessage(result.message);
     setShowMessage(true);
     setTimeout(() => setShowMessage(false), 3000);
+
+    // Clear hint value after guess
+    setHintValue('');
 
     if (result.isCorrect) {
       // Move to next stage or win
@@ -127,7 +135,7 @@ const Game: React.FC = () => {
       guesses: {
         continent: [],
         country: [],
-        state: [],
+        region: [],
         city: []
       },
       totalGuesses: 0,
@@ -138,6 +146,7 @@ const Game: React.FC = () => {
     });
     setMessage('');
     setShowMessage(false);
+    setHintValue('');
   };
 
   if (gameState.isLoading) {
@@ -199,6 +208,7 @@ const Game: React.FC = () => {
               currentLocation={gameState.currentLocation}
               hintsUsed={gameState.hintsUsed}
               onHintUsed={handleHintUsed}
+              onHintSelected={handleHintSelected}
             />
           </div>
 
@@ -209,6 +219,7 @@ const Game: React.FC = () => {
               onGuess={handleGuess}
               previousGuesses={gameState.guesses[gameState.currentStage]}
               currentLocation={gameState.currentLocation}
+              hintValue={hintValue}
             />
           </div>
         </motion.div>
@@ -236,13 +247,13 @@ const Game: React.FC = () => {
           className="text-center mt-6"
         >
           <div className="flex justify-center space-x-2">
-            {['continent', 'country', 'state', 'city'].map((stage, index) => (
+            {['continent', 'country', 'region', 'city'].map((stage, index) => (
               <div
                 key={stage}
                 className={`w-3 h-3 rounded-full ${
                   gameState.currentStage === stage
                     ? 'bg-blue-500'
-                    : index < ['continent', 'country', 'state', 'city'].indexOf(gameState.currentStage)
+                    : index < ['continent', 'country', 'region', 'city'].indexOf(gameState.currentStage)
                     ? 'bg-green-500'
                     : 'bg-gray-300'
                 }`}
@@ -250,7 +261,7 @@ const Game: React.FC = () => {
             ))}
           </div>
           <p className="text-white/70 text-sm mt-2">
-            Stage {['continent', 'country', 'state', 'city'].indexOf(gameState.currentStage) + 1} of 4
+            Stage {['continent', 'country', 'region', 'city'].indexOf(gameState.currentStage) + 1} of 4
           </p>
         </motion.div>
       </div>

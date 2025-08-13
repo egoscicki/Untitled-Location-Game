@@ -2,7 +2,7 @@ export interface Location {
   lat: number;
   lng: number;
   city: string;
-  state: string;
+  region: string; // Changed from 'state' to 'region' for universal use
   country: string;
   continent: string;
   imageUrl: string;
@@ -14,7 +14,7 @@ export interface GameState {
   guesses: {
     continent: string[];
     country: string[];
-    state: string[];
+    region: string[]; // Changed from 'state' to 'region'
     city: string[];
   };
   totalGuesses: number;
@@ -24,7 +24,7 @@ export interface GameState {
   hintsUsed: number;
 }
 
-export type GameStage = 'continent' | 'country' | 'state' | 'city';
+export type GameStage = 'continent' | 'country' | 'region' | 'city'; // Changed 'state' to 'region'
 
 export interface GuessResult {
   isCorrect: boolean;
@@ -51,7 +51,7 @@ export const CONTINENTS = [
 export const SCORING = {
   continent: { first: 10, subsequent: 5 },
   country: { first: 20, subsequent: 10 },
-  state: { first: 30, subsequent: 15 },
+  region: { first: 30, subsequent: 15 }, // Changed from 'state' to 'region'
   city: { first: 50, subsequent: 25 }
 } as const;
 

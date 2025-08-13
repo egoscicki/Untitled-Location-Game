@@ -8,13 +8,15 @@ interface GuessInputProps {
   onGuess: (guess: string) => void;
   previousGuesses: string[];
   currentLocation: Location | null;
+  hintValue?: string; // New prop for hint selection
 }
 
 const GuessInput: React.FC<GuessInputProps> = ({
   currentStage,
   onGuess,
   previousGuesses,
-  currentLocation
+  currentLocation,
+  hintValue
 }) => {
   const [inputValue, setInputValue] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -26,14 +28,21 @@ const GuessInput: React.FC<GuessInputProps> = ({
     setShowSuggestions(false);
   }, [currentStage]);
 
+  // Handle hint selection
+  useEffect(() => {
+    if (hintValue) {
+      setInputValue(hintValue);
+    }
+  }, [hintValue]);
+
   const getStageLabel = (stage: GameStage): string => {
     switch (stage) {
       case 'continent':
         return 'Which continent is this location in?';
       case 'country':
         return 'Which country is this location in?';
-      case 'state':
-        return 'Which US state is this location in?';
+      case 'region':
+        return 'Which region/state/province is this location in?';
       case 'city':
         return 'Which city is this location?';
       default:
@@ -60,9 +69,9 @@ const GuessInput: React.FC<GuessInputProps> = ({
         
         if (currentStage === 'country') {
           newSuggestions = await placesApiService.getCountrySuggestions(value);
-        } else if (currentStage === 'state') {
-          // Get US state suggestions
-          newSuggestions = await placesApiService.getStateSuggestions(value);
+        } else if (currentStage === 'region') {
+          // Get region suggestions
+          newSuggestions = await placesApiService.getRegionSuggestions(value);
         } else if (currentStage === 'city') {
           const country = currentLocation?.country || '';
           newSuggestions = await placesApiService.getCitySuggestions(value, country);

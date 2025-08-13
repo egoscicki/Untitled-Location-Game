@@ -7,13 +7,15 @@ interface HintButtonProps {
   currentLocation: Location | null;
   hintsUsed: number;
   onHintUsed: () => void;
+  onHintSelected: (hint: string) => void; // New prop to communicate with parent
 }
 
 const HintButton: React.FC<HintButtonProps> = ({
   currentStage,
   currentLocation,
   hintsUsed,
-  onHintUsed
+  onHintUsed,
+  onHintSelected
 }) => {
   const [showHint, setShowHint] = useState(false);
   const [hintOptions, setHintOptions] = useState<string[]>([]);
@@ -29,13 +31,45 @@ const HintButton: React.FC<HintButtonProps> = ({
         options = ['Africa', 'Antarctica', 'Asia', 'Europe', 'North America', 'Oceania', 'South America'];
         break;
       case 'country':
-        options = ['United States', 'United Kingdom', 'France', 'Japan', 'Australia', 'Brazil', 'Egypt', 'Germany', 'Italy', 'Spain'];
+        // Use countries from the same continent
+        const continentCountries = {
+          'North America': ['United States', 'Canada', 'Mexico', 'Costa Rica', 'Panama'],
+          'Europe': ['United Kingdom', 'France', 'Germany', 'Italy', 'Spain'],
+          'Asia': ['Japan', 'China', 'South Korea', 'India', 'Thailand'],
+          'Oceania': ['Australia', 'New Zealand', 'Fiji', 'Papua New Guinea', 'Vanuatu'],
+          'South America': ['Brazil', 'Argentina', 'Chile', 'Peru', 'Colombia'],
+          'Africa': ['Egypt', 'South Africa', 'Morocco', 'Kenya', 'Nigeria']
+        };
+        options = continentCountries[currentLocation.continent as keyof typeof continentCountries] || 
+                  ['United States', 'United Kingdom', 'France', 'Japan', 'Australia'];
         break;
-      case 'state':
-        options = ['California', 'Texas', 'Florida', 'New York', 'Illinois', 'Pennsylvania', 'Ohio', 'Georgia', 'North Carolina', 'Michigan'];
+      case 'region':
+        // Use regions from the same country
+        const countryRegions = {
+          'United States': ['California', 'Texas', 'Florida', 'New York', 'Illinois'],
+          'Australia': ['New South Wales', 'Victoria', 'Queensland', 'Western Australia', 'South Australia'],
+          'United Kingdom': ['England', 'Scotland', 'Wales', 'Northern Ireland', 'Channel Islands'],
+          'France': ['Île-de-France', 'Provence-Alpes-Côte d\'Azur', 'Occitanie', 'Nouvelle-Aquitaine', 'Auvergne-Rhône-Alpes'],
+          'Japan': ['Tokyo', 'Osaka', 'Kyoto', 'Hokkaido', 'Fukuoka'],
+          'Brazil': ['São Paulo', 'Rio de Janeiro', 'Minas Gerais', 'Bahia', 'Paraná'],
+          'Egypt': ['Cairo', 'Alexandria', 'Giza', 'Luxor', 'Aswan']
+        };
+        options = countryRegions[currentLocation.country as keyof typeof countryRegions] || 
+                  ['California', 'New South Wales', 'England', 'Île-de-France', 'Tokyo'];
         break;
       case 'city':
-        options = ['New York', 'Los Angeles', 'London', 'Paris', 'Tokyo', 'Sydney', 'Rio de Janeiro', 'Cairo', 'Berlin', 'Rome'];
+        // Use cities from the same country
+        const countryCities = {
+          'United States': ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix'],
+          'Australia': ['Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaide'],
+          'United Kingdom': ['London', 'Manchester', 'Birmingham', 'Liverpool', 'Leeds'],
+          'France': ['Paris', 'Marseille', 'Lyon', 'Toulouse', 'Nice'],
+          'Japan': ['Tokyo', 'Osaka', 'Kyoto', 'Yokohama', 'Nagoya'],
+          'Brazil': ['São Paulo', 'Rio de Janeiro', 'Brasília', 'Salvador', 'Fortaleza'],
+          'Egypt': ['Cairo', 'Alexandria', 'Giza', 'Luxor', 'Aswan']
+        };
+        options = countryCities[currentLocation.country as keyof typeof countryCities] || 
+                  ['New York', 'Sydney', 'London', 'Paris', 'Tokyo'];
         break;
     }
     
@@ -64,7 +98,7 @@ const HintButton: React.FC<HintButtonProps> = ({
 
   const handleOptionClick = (option: string) => {
     setShowHint(false);
-    // The user can now see the hint options, but they still need to type their guess
+    onHintSelected(option); // Send the selected hint to parent component
   };
 
   const remainingHints = MAX_HINTS - hintsUsed;
@@ -106,7 +140,7 @@ const HintButton: React.FC<HintButtonProps> = ({
               ))}
             </div>
             <p className="text-xs text-gray-500 mt-3 text-center">
-              One of these options is correct!
+              Click an option to auto-fill your guess!
             </p>
           </motion.div>
         )}

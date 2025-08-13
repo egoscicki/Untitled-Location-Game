@@ -12,7 +12,7 @@ interface ScoreDisplayProps {
 
 const ScoreDisplay: React.FC<ScoreDisplayProps> = ({ score, totalGuesses, currentStage, hintsUsed = 0 }) => {
   const getStageProgress = (): number => {
-    const stages: GameStage[] = ['continent', 'country', 'state', 'city'];
+    const stages: GameStage[] = ['continent', 'country', 'region', 'city'];
     const currentIndex = stages.indexOf(currentStage);
     return ((currentIndex + 1) / stages.length) * 100;
   };
@@ -23,7 +23,7 @@ const ScoreDisplay: React.FC<ScoreDisplayProps> = ({ score, totalGuesses, curren
         return '🌍';
       case 'country':
         return '🏳️';
-      case 'state':
+      case 'region':
         return '🗺️';
       case 'city':
         return '🏙️';
@@ -92,13 +92,13 @@ const ScoreDisplay: React.FC<ScoreDisplayProps> = ({ score, totalGuesses, curren
 
       {/* Stage Indicators */}
       <div className="mt-4 flex justify-center space-x-2">
-        {['continent', 'country', 'state', 'city'].map((stage, index) => (
+        {['continent', 'country', 'region', 'city'].map((stage, index) => (
           <div
             key={stage}
             className={`flex flex-col items-center ${
-              index < ['continent', 'country', 'state', 'city'].indexOf(currentStage)
+              index < ['continent', 'country', 'region', 'city'].indexOf(currentStage)
                 ? 'text-green-600'
-                : index === ['continent', 'country', 'state', 'city'].indexOf(currentStage)
+                : index === ['continent', 'country', 'region', 'city'].indexOf(currentStage)
                 ? 'text-blue-600'
                 : 'text-gray-400'
             }`}

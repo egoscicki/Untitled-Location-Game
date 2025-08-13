@@ -15,19 +15,16 @@ class PlacesApiService {
   private autocompleteService: google.maps.places.AutocompleteService | null = null;
   private placesService: google.maps.places.PlacesService | null = null;
 
-  // US States for autocomplete
-  private usStates = [
-    'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
-    'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia',
-    'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
-    'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland',
-    'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri',
-    'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey',
-    'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio',
-    'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina',
-    'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
-    'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
-  ];
+  // Regions for different countries for autocomplete
+  private regions = {
+    'United States': ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'],
+    'Australia': ['New South Wales', 'Victoria', 'Queensland', 'Western Australia', 'South Australia', 'Tasmania', 'Australian Capital Territory', 'Northern Territory'],
+    'United Kingdom': ['England', 'Scotland', 'Wales', 'Northern Ireland', 'Channel Islands', 'Isle of Man'],
+    'France': ['Île-de-France', 'Provence-Alpes-Côte d\'Azur', 'Occitanie', 'Nouvelle-Aquitaine', 'Auvergne-Rhône-Alpes', 'Bourgogne-Franche-Comté', 'Centre-Val de Loire', 'Corse', 'Grand Est', 'Hauts-de-France', 'Normandie', 'Pays de la Loire'],
+    'Japan': ['Tokyo', 'Osaka', 'Kyoto', 'Hokkaido', 'Fukuoka', 'Aichi', 'Kanagawa', 'Saitama', 'Chiba', 'Hyogo'],
+    'Brazil': ['São Paulo', 'Rio de Janeiro', 'Minas Gerais', 'Bahia', 'Paraná', 'Rio Grande do Sul', 'Pernambuco', 'Ceará', 'Pará', 'Santa Catarina'],
+    'Egypt': ['Cairo', 'Alexandria', 'Giza', 'Luxor', 'Aswan', 'Sharm El Sheikh', 'Hurghada', 'Dahab', 'Siwa', 'Marsa Alam']
+  };
 
   constructor() {
     // Using the provided API key
@@ -74,12 +71,22 @@ class PlacesApiService {
     }
   }
 
-  async getStateSuggestions(input: string): Promise<string[]> {
-    // Filter US states based on input
+  async getRegionSuggestions(input: string, country?: string): Promise<string[]> {
+    // If country is specified, filter regions for that country
+    if (country && this.regions[country as keyof typeof this.regions]) {
+      const countryRegions = this.regions[country as keyof typeof this.regions];
+      const normalizedInput = input.toLowerCase();
+      return countryRegions.filter(region => 
+        region.toLowerCase().includes(normalizedInput)
+      ).slice(0, 10);
+    }
+    
+    // Otherwise, return regions from all countries
     const normalizedInput = input.toLowerCase();
-    return this.usStates.filter(state => 
-      state.toLowerCase().includes(normalizedInput)
-    ).slice(0, 10); // Limit to 10 suggestions
+    const allRegions = Object.values(this.regions).flat();
+    return allRegions.filter(region => 
+      region.toLowerCase().includes(normalizedInput)
+    ).slice(0, 10);
   }
 
   async getCitySuggestions(input: string, country?: string): Promise<string[]> {
