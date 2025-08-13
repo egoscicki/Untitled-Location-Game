@@ -14,7 +14,7 @@ const ScoreDisplay: React.FC<ScoreDisplayProps> = ({ score, totalGuesses, curren
   const getStageProgress = (): number => {
     const stages: GameStage[] = ['continent', 'country', 'region', 'city'];
     const currentIndex = stages.indexOf(currentStage);
-    return ((currentIndex + 1) / stages.length) * 100;
+    return (currentIndex / stages.length) * 100;
   };
 
   const getStageIcon = (stage: GameStage): string => {
