@@ -265,11 +265,12 @@ const Game: React.FC = () => {
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: -20 }}
-            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-sm mx-4"
+            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50"
+            style={{ width: 'calc(100vw - 2rem)', maxWidth: '500px' }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
           >
-            <div className="bg-purple-50/90 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-2xl border border-purple-200/50 w-full">
-              <p className="text-gray-800 font-semibold text-lg text-center leading-tight">{message}</p>
+            <div className="bg-purple-50/90 backdrop-blur-sm rounded-2xl px-4 py-4 shadow-2xl border border-purple-200/50 w-full mx-2">
+              <p className="text-gray-800 font-semibold text-base sm:text-lg text-center leading-tight break-words">{message}</p>
             </div>
           </motion.div>
         )}
