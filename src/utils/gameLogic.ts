@@ -152,34 +152,66 @@ const SAMPLE_LOCATIONS: Location[] = [
 
 // More robust random number generation
 const getRandomIndex = (max: number): number => {
+  let randomValue: number;
+  
   // Use crypto.getRandomValues if available (more random than Math.random)
   if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
     const array = new Uint32Array(1);
     crypto.getRandomValues(array);
-    return array[0] % max;
+    randomValue = array[0];
+  } else {
+    // Fallback to Math.random with additional entropy
+    randomValue = Math.random() * 0xFFFFFFFF;
   }
-  // Fallback to Math.random with additional entropy
-  return Math.floor(Math.random() * max);
+  
+  // Add additional entropy from multiple sources
+  const timestamp = Date.now() % max;
+  const perfTime = (typeof performance !== 'undefined' ? performance.now() : Date.now()) % max;
+  
+  // Combine multiple random sources for better distribution
+  const combinedRandom = (randomValue + timestamp + perfTime) % max;
+  
+  return Math.floor(combinedRandom);
 };
 
 // Keep track of how many times we've called this to occasionally shuffle
 let locationCallCount = 0;
+let lastSelectedIndices: number[] = [];
 
 export const getRandomLocation = async (): Promise<Location> => {
   // Occasionally shuffle the locations array to prevent patterns
   locationCallCount++;
-  if (locationCallCount % 5 === 0) { // Shuffle every 5 calls
+  if (locationCallCount % 3 === 0) { // Shuffle every 3 calls instead of 5
     shuffleArray(SAMPLE_LOCATIONS);
     console.log('🔄 Shuffled locations array to prevent patterns');
   }
   
   // Use a more robust random number generation
-  const randomIndex = getRandomIndex(SAMPLE_LOCATIONS.length);
+  let randomIndex = getRandomIndex(SAMPLE_LOCATIONS.length);
+  
+  // Ensure we don't get the same location twice in a row
+  if (lastSelectedIndices.length > 0 && lastSelectedIndices[lastSelectedIndices.length - 1] === randomIndex) {
+    // If we got the same index, try again (but only once to avoid infinite loops)
+    const newRandomIndex = getRandomIndex(SAMPLE_LOCATIONS.length);
+    if (newRandomIndex !== randomIndex) {
+      randomIndex = newRandomIndex;
+      console.log('🔄 Avoided duplicate location, new index:', randomIndex);
+    }
+  }
+  
   const location = SAMPLE_LOCATIONS[randomIndex];
+  
+  // Track the last few selections to detect patterns
+  lastSelectedIndices.push(randomIndex);
+  if (lastSelectedIndices.length > 10) {
+    lastSelectedIndices.shift(); // Keep only last 10
+  }
   
   console.log('🎲 Random index generated:', randomIndex);
   console.log('🎯 Getting random location:', location.city, location.country);
   console.log('📍 Total locations available:', SAMPLE_LOCATIONS.length);
+  console.log('📊 Last 10 selected indices:', lastSelectedIndices);
+  console.log('🔄 Shuffle count:', Math.floor(locationCallCount / 3));
   
   // Generate Google Street View image URL
   console.log('🖼️ Attempting to get Street View image for:', location.lat, location.lng);
