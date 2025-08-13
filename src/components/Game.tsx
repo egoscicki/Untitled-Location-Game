@@ -197,22 +197,6 @@ const Game: React.FC = () => {
           hintsUsed={gameState.hintsUsed}
         />
 
-        {/* Message Display - Moved higher for better mobile visibility */}
-        <AnimatePresence>
-          {showMessage && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="text-center mb-4"
-            >
-              <div className="bg-white/90 backdrop-blur-sm rounded-lg px-6 py-3 inline-block shadow-lg">
-                <p className="text-gray-800 font-medium">{message}</p>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         {/* Game Container */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
@@ -273,6 +257,23 @@ const Game: React.FC = () => {
           </p>
         </motion.div>
       </div>
+
+      {/* Fixed Position Toaster - Appears in middle of screen */}
+      <AnimatePresence>
+        {showMessage && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: -20 }}
+            className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50"
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+          >
+            <div className="bg-white/95 backdrop-blur-sm rounded-xl px-8 py-4 shadow-2xl border border-gray-200">
+              <p className="text-gray-800 font-semibold text-lg text-center">{message}</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
