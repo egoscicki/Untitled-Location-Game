@@ -287,6 +287,7 @@ const Game: React.FC = () => {
           totalGuesses={gameState.totalGuesses}
           currentStage={gameState.currentStage}
           hintsUsed={gameState.hintsUsed}
+          gameMode={gameMode}
         />
 
         {/* Game Container */}
@@ -319,6 +320,7 @@ const Game: React.FC = () => {
               previousGuesses={gameState.guesses[gameState.currentStage]}
               currentLocation={gameState.currentLocation}
               hintValue={hintValue}
+              gameMode={gameMode}
             />
           </div>
         </motion.div>

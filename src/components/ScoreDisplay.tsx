@@ -8,13 +8,23 @@ interface ScoreDisplayProps {
   totalGuesses: number;
   currentStage: GameStage;
   hintsUsed?: number;
+  gameMode?: 'us' | 'world';
 }
 
-const ScoreDisplay: React.FC<ScoreDisplayProps> = ({ score, totalGuesses, currentStage, hintsUsed = 0 }) => {
+const ScoreDisplay: React.FC<ScoreDisplayProps> = ({ score, totalGuesses, currentStage, hintsUsed = 0, gameMode = 'world' }) => {
   const getStageProgress = (): number => {
-    const stages: GameStage[] = ['continent', 'country', 'region', 'city'];
-    const currentIndex = stages.indexOf(currentStage);
-    return (currentIndex / stages.length) * 100;
+    if (gameMode === 'us') {
+      // US mode: region (0%) -> city (100%)
+      const stages: GameStage[] = ['region', 'city'];
+      const currentIndex = stages.indexOf(currentStage);
+      if (currentIndex === -1) return 0; // If somehow not in expected stages
+      return (currentIndex / (stages.length - 1)) * 100;
+    } else {
+      // World mode: continent (0%) -> country (25%) -> region (50%) -> city (100%)
+      const stages: GameStage[] = ['continent', 'country', 'region', 'city'];
+      const currentIndex = stages.indexOf(currentStage);
+      return (currentIndex / (stages.length - 1)) * 100;
+    }
   };
 
   return (

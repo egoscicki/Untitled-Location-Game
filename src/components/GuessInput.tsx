@@ -9,6 +9,7 @@ interface GuessInputProps {
   previousGuesses: string[];
   currentLocation: Location | null;
   hintValue?: string; // New prop for hint selection
+  gameMode?: 'us' | 'world';
 }
 
 const GuessInput: React.FC<GuessInputProps> = ({
@@ -16,7 +17,8 @@ const GuessInput: React.FC<GuessInputProps> = ({
   onGuess,
   previousGuesses,
   currentLocation,
-  hintValue
+  hintValue,
+  gameMode
 }) => {
   const [inputValue, setInputValue] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -42,7 +44,7 @@ const GuessInput: React.FC<GuessInputProps> = ({
       case 'country':
         return 'Which country is this location in?';
       case 'region':
-        return 'Which region/state/province is this location in?';
+        return gameMode === 'us' ? 'Which State is this location in?' : 'Which region/state/province is this location in?';
       case 'city':
         return 'Which city is this location?';
       default:
