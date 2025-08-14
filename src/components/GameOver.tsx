@@ -72,7 +72,7 @@ const GameOver: React.FC<GameOverProps> = ({
   const getResultMessage = () => {
     if (isWinner) {
       return {
-        title: '🎉 Congratulations! 🎉',
+        title: 'Congratulations!',
         subtitle: 'You successfully guessed the location!',
         emoji: '🏆'
       };
