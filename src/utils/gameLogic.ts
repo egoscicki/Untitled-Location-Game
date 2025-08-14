@@ -384,12 +384,24 @@ export const checkGuess = (
   stage: GameStage,
   guess: string,
   correctAnswer: string,
-  previousGuesses: string[]
+  previousGuesses: string[],
+  currentLocation?: Location
 ): GuessResult => {
   const normalizedGuess = guess.trim().toLowerCase();
   const normalizedAnswer = correctAnswer.toLowerCase();
   
-  const isCorrect = normalizedGuess === normalizedAnswer;
+  let isCorrect = normalizedGuess === normalizedAnswer;
+  
+  // Special case: If user is on region stage and region/city have same name,
+  // allow them to win by guessing the city name
+  if (stage === 'region' && currentLocation && !isCorrect) {
+    const normalizedCity = currentLocation.city.toLowerCase();
+    if (normalizedGuess === normalizedCity && normalizedCity === normalizedAnswer) {
+      isCorrect = true;
+      console.log('🎯 Region/City same name detected - allowing win with city guess');
+    }
+  }
+  
   const isFirstGuess = previousGuesses.length === 0;
   
   // Add debugging for city validation
@@ -420,9 +432,21 @@ export const checkGuess = (
   return { isCorrect, message, points };
 };
 
-export const getNextStage = (currentStage: GameStage): GameStage | null => {
+export const getNextStage = (currentStage: GameStage, currentLocation?: Location): GameStage | null => {
   const stages: GameStage[] = ['continent', 'country', 'region', 'city'];
   const currentIndex = stages.indexOf(currentStage);
+  
+  // Special case: If we're on region stage and region/city have same name,
+  // skip to city stage (which will immediately win)
+  if (currentStage === 'region' && currentLocation) {
+    const normalizedRegion = currentLocation.region.toLowerCase();
+    const normalizedCity = currentLocation.city.toLowerCase();
+    if (normalizedRegion === normalizedCity) {
+      console.log('🎯 Region/City same name detected - skipping to city stage for immediate win');
+      return 'city';
+    }
+  }
+  
   return currentIndex < stages.length - 1 ? stages[currentIndex + 1] : null;
 };
 

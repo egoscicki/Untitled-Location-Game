@@ -147,7 +147,7 @@ const Game: React.FC = () => {
     const correctAnswer = gameState.currentLocation[currentStage];
     const previousGuesses = gameState.guesses[currentStage];
 
-    const result = checkGuess(currentStage, guess, correctAnswer, previousGuesses);
+    const result = checkGuess(currentStage, guess, correctAnswer, previousGuesses, gameState.currentLocation);
 
     // Play appropriate audio based on result
     if (result.isCorrect) {
@@ -178,7 +178,7 @@ const Game: React.FC = () => {
 
     if (result.isCorrect) {
       // Move to next stage or win
-      const nextStage = getNextStage(currentStage);
+      const nextStage = getNextStage(currentStage, gameState.currentLocation);
       
       if (nextStage) {
         // Play stage progression sound
