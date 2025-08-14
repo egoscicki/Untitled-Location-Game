@@ -281,30 +281,6 @@ const Game: React.FC = () => {
   return (
     <div className="min-h-screen">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8 pt-4"
-        >
-          <div className="flex items-center justify-center mb-4">
-            <div className="w-12 h-12 mr-3 flex items-center justify-center">
-              <img 
-                src="/Wherzit_logo.svg" 
-                alt="Wherzit Logo" 
-                className="w-full h-full"
-              />
-            </div>
-            <h1 className="text-4xl font-bold text-white">Wherzit</h1>
-          </div>
-          <p className="text-white/80 text-lg">Guess the location from the image!</p>
-        </motion.div>
-
-        {/* Game Mode Selection */}
-        <GameModeSelection
-          onGameModeSelected={handleGameModeSelected}
-        />
-
         {/* Score Display */}
         <ScoreDisplay
           score={gameState.score}
@@ -345,31 +321,6 @@ const Game: React.FC = () => {
               hintValue={hintValue}
             />
           </div>
-        </motion.div>
-
-        {/* Progress Indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center mt-6"
-        >
-          <div className="flex justify-center space-x-2">
-            {['continent', 'country', 'region', 'city'].map((stage, index) => (
-              <div
-                key={stage}
-                className={`w-3 h-3 rounded-full ${
-                  gameState.currentStage === stage
-                    ? 'bg-blue-500'
-                    : index < ['continent', 'country', 'region', 'city'].indexOf(gameState.currentStage)
-                    ? 'bg-green-500'
-                    : 'bg-gray-300'
-                }`}
-              />
-            ))}
-          </div>
-          <p className="text-white/70 text-sm mt-2">
-            Stage {['continent', 'country', 'region', 'city'].indexOf(gameState.currentStage) + 1} of 4
-          </p>
         </motion.div>
       </div>
 
