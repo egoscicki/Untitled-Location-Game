@@ -320,23 +320,99 @@ export const generateHint = (stage: GameStage, correctAnswer: string, currentLoc
                 ['California', 'New South Wales', 'England', 'Île-de-France', 'Tokyo', 'Berlin', 'Lazio', 'Beijing', 'Maharashtra', 'Gauteng'];
       break;
     case 'city':
-      // Use cities from the same country
-      const countryCities = {
-        'United States': ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'San Francisco', 'Miami', 'Philadelphia', 'San Antonio', 'San Diego'],
-        'Australia': ['Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaide', 'Gold Coast', 'Newcastle', 'Canberra', 'Sunshine Coast', 'Wollongong'],
-        'United Kingdom': ['London', 'Manchester', 'Birmingham', 'Liverpool', 'Leeds', 'Sheffield', 'Edinburgh', 'Bristol', 'Glasgow', 'Leicester'],
-        'France': ['Paris', 'Marseille', 'Lyon', 'Toulouse', 'Nice', 'Nantes', 'Strasbourg', 'Montpellier', 'Bordeaux', 'Lille'],
-        'Japan': ['Tokyo', 'Osaka', 'Kyoto', 'Yokohama', 'Nagoya', 'Sapporo', 'Kobe', 'Fukuoka', 'Kawasaki', 'Saitama'],
-        'Brazil': ['São Paulo', 'Rio de Janeiro', 'Brasília', 'Salvador', 'Fortaleza', 'Belo Horizonte', 'Manaus', 'Curitiba', 'Recife', 'Porto Alegre'],
-        'Egypt': ['Cairo', 'Alexandria', 'Giza', 'Luxor', 'Aswan', 'Sharm El Sheikh', 'Hurghada', 'Dahab', 'Siwa', 'Marsa Alam'],
-        'Germany': ['Berlin', 'Hamburg', 'Munich', 'Cologne', 'Frankfurt', 'Stuttgart', 'Düsseldorf', 'Dortmund', 'Essen', 'Leipzig'],
-        'Italy': ['Rome', 'Milan', 'Naples', 'Turin', 'Palermo', 'Genoa', 'Bologna', 'Florence', 'Bari', 'Catania'],
-        'China': ['Beijing', 'Shanghai', 'Guangzhou', 'Shenzhen', 'Chengdu', 'Tianjin', 'Chongqing', 'Nanjing', 'Wuhan', 'Xi\'an'],
-        'India': ['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Kolkata', 'Pune', 'Ahmedabad', 'Surat', 'Jaipur'],
-        'South Africa': ['Johannesburg', 'Cape Town', 'Durban', 'Pretoria', 'Port Elizabeth', 'Bloemfontein', 'East London', 'Kimberley', 'Nelspruit', 'Polokwane']
+      // Use cities from the same region/state (more contextually relevant)
+      const regionCities = {
+        // US States
+        'California': ['Los Angeles', 'San Francisco', 'San Diego', 'Sacramento', 'Fresno', 'Long Beach', 'Oakland', 'Bakersfield', 'Anaheim', 'Stockton'],
+        'Texas': ['Houston', 'Dallas', 'San Antonio', 'Austin', 'Fort Worth', 'El Paso', 'Arlington', 'Corpus Christi', 'Plano', 'Lubbock'],
+        'Florida': ['Miami', 'Orlando', 'Tampa', 'Jacksonville', 'Fort Lauderdale', 'Tallahassee', 'Gainesville', 'Pensacola', 'Daytona Beach', 'Key West'],
+        'New York': ['New York City', 'Buffalo', 'Rochester', 'Yonkers', 'Syracuse', 'Albany', 'New Rochelle', 'Mount Vernon', 'Schenectady', 'Utica'],
+        'Illinois': ['Chicago', 'Springfield', 'Peoria', 'Rockford', 'Naperville', 'Champaign', 'Bloomington', 'Decatur', 'Arlington Heights', 'Evanston'],
+        'Pennsylvania': ['Philadelphia', 'Pittsburgh', 'Allentown', 'Erie', 'Reading', 'Scranton', 'Bethlehem', 'Lancaster', 'Harrisburg', 'Altoona'],
+        'Ohio': ['Columbus', 'Cleveland', 'Cincinnati', 'Toledo', 'Akron', 'Dayton', 'Parma', 'Canton', 'Youngstown', 'Lorain'],
+        'Georgia': ['Atlanta', 'Savannah', 'Athens', 'Augusta', 'Columbus', 'Macon', 'Albany', 'Marietta', 'Roswell', 'Sandy Springs'],
+        'North Carolina': ['Charlotte', 'Raleigh', 'Greensboro', 'Durham', 'Winston-Salem', 'Fayetteville', 'Cary', 'Wilmington', 'High Point', 'Greenville'],
+        'Michigan': ['Detroit', 'Grand Rapids', 'Warren', 'Sterling Heights', 'Lansing', 'Ann Arbor', 'Flint', 'Dearborn', 'Livonia', 'Westland'],
+        'Wisconsin': ['Milwaukee', 'Madison', 'Green Bay', 'Kenosha', 'Racine', 'Appleton', 'Waukesha', 'Oshkosh', 'Eau Claire', 'Janesville'],
+        'Minnesota': ['Minneapolis', 'St. Paul', 'Rochester', 'Duluth', 'Bloomington', 'Brooklyn Park', 'Plymouth', 'St. Cloud', 'Eagan', 'Woodbury'],
+        'Missouri': ['St. Louis', 'Kansas City', 'Springfield', 'Columbia', 'Independence', 'Lee\'s Summit', 'O\'Fallon', 'St. Joseph', 'St. Charles', 'St. Peters'],
+        'Maryland': ['Baltimore', 'Annapolis', 'Frederick', 'Rockville', 'Gaithersburg', 'Bowie', 'Hagerstown', 'Frederick', 'Salisbury', 'College Park'],
+        'Tennessee': ['Memphis', 'Nashville', 'Knoxville', 'Chattanooga', 'Clarksville', 'Murfreesboro', 'Franklin', 'Jackson', 'Johnson City', 'Kingsport'],
+        'Louisiana': ['New Orleans', 'Baton Rouge', 'Shreveport', 'Lafayette', 'Lake Charles', 'Kenner', 'Bossier City', 'Monroe', 'Alexandria', 'Houma'],
+        'New Jersey': ['Newark', 'Jersey City', 'Paterson', 'Elizabeth', 'Trenton', 'Camden', 'Passaic', 'Union City', 'Bayonne', 'East Orange'],
+        'Connecticut': ['Bridgeport', 'New Haven', 'Stamford', 'Hartford', 'Waterbury', 'Norwalk', 'Danbury', 'New Britain', 'Bristol', 'Meriden'],
+        'Utah': ['Salt Lake City', 'West Valley City', 'Provo', 'West Jordan', 'Orem', 'Sandy', 'Ogden', 'St. George', 'Layton', 'South Jordan'],
+        'Idaho': ['Boise', 'Meridian', 'Nampa', 'Idaho Falls', 'Pocatello', 'Caldwell', 'Coeur d\'Alene', 'Twin Falls', 'Lewiston', 'Post Falls'],
+        'Oregon': ['Portland', 'Salem', 'Eugene', 'Gresham', 'Hillsboro', 'Beaverton', 'Bend', 'Medford', 'Springfield', 'Corvallis'],
+        'Alaska': ['Anchorage', 'Fairbanks', 'Juneau', 'Sitka', 'Ketchikan', 'Kodiak', 'Bethel', 'Palmer', 'Kenai', 'Kodiak'],
+        'Hawaii': ['Honolulu', 'Hilo', 'Kailua', 'Kapolei', 'Kaneohe', 'Mililani Town', 'Ewa Gentry', 'Kihei', 'Makakilo', 'Wahiawa'],
+        
+        // International Regions
+        'England': ['London', 'Manchester', 'Birmingham', 'Liverpool', 'Leeds', 'Sheffield', 'Edinburgh', 'Bristol', 'Glasgow', 'Leicester'],
+        'Scotland': ['Edinburgh', 'Glasgow', 'Aberdeen', 'Dundee', 'Inverness', 'Perth', 'Stirling', 'Dunfermline', 'Paisley', 'Kilmarnock'],
+        'Wales': ['Cardiff', 'Swansea', 'Newport', 'Wrexham', 'Barry', 'Neath', 'Carmarthen', 'Bangor', 'St Davids', 'St Asaph'],
+        'Greater London': ['Westminster', 'Camden', 'Greenwich', 'Hackney', 'Hammersmith', 'Islington', 'Kensington', 'Lambeth', 'Lewisham', 'Southwark'],
+        'Île-de-France': ['Paris', 'Versailles', 'Saint-Denis', 'Argenteuil', 'Montreuil', 'Nanterre', 'Vitry-sur-Seine', 'Créteil', 'Saint-Maur-des-Fossés', 'Aulnay-sous-Bois'],
+        'Provence-Alpes-Côte d\'Azur': ['Marseille', 'Nice', 'Toulon', 'Aix-en-Provence', 'Avignon', 'Antibes', 'Cannes', 'La Seyne-sur-Mer', 'Hyères', 'Fréjus'],
+        'Auvergne-Rhône-Alpes': ['Lyon', 'Grenoble', 'Saint-Étienne', 'Annecy', 'Chambéry', 'Valence', 'Saint-Chamond', 'Bourgoin-Jallieu', 'Vienne', 'Roanne'],
+        'Occitanie': ['Toulouse', 'Montpellier', 'Nîmes', 'Perpignan', 'Béziers', 'Narbonne', 'Albi', 'Carcassonne', 'Castres', 'Tarbes'],
+        'Berlin': ['Mitte', 'Kreuzberg', 'Charlottenburg', 'Schöneberg', 'Tempelhof', 'Neukölln', 'Treptow', 'Köpenick', 'Lichtenberg', 'Marzahn'],
+        'Bavaria': ['Munich', 'Nuremberg', 'Augsburg', 'Würzburg', 'Regensburg', 'Ingolstadt', 'Fürth', 'Erlangen', 'Bayreuth', 'Bamberg'],
+        'North Rhine-Westphalia': ['Cologne', 'Dortmund', 'Düsseldorf', 'Essen', 'Duisburg', 'Bochum', 'Wuppertal', 'Bielefeld', 'Bonn', 'Münster'],
+        'Baden-Württemberg': ['Stuttgart', 'Mannheim', 'Karlsruhe', 'Freiburg', 'Heidelberg', 'Heilbronn', 'Pforzheim', 'Ulm', 'Pforzheim', 'Reutlingen'],
+        'Lazio': ['Rome', 'Latina', 'Guidonia', 'Aprilia', 'Civitavecchia', 'Velletri', 'Frosinone', 'Viterbo', 'Rieti', 'Tivoli'],
+        'Lombardy': ['Milan', 'Bergamo', 'Brescia', 'Monza', 'Como', 'Varese', 'Cremona', 'Lecco', 'Sondrio', 'Mantua'],
+        'Campania': ['Naples', 'Salerno', 'Giugliano', 'Torre del Greco', 'Casoria', 'Pozzuoli', 'Caserta', 'Castellammare di Stabia', 'Afragola', 'Benevento'],
+        'Sicily': ['Palermo', 'Catania', 'Messina', 'Syracuse', 'Ragusa', 'Agrigento', 'Trapani', 'Caltanissetta', 'Enna', 'Caltagirone'],
+        'Tokyo Prefecture': ['Shibuya', 'Shinjuku', 'Harajuku', 'Ginza', 'Asakusa', 'Akihabara', 'Roppongi', 'Shibuya', 'Ikebukuro', 'Ueno'],
+        'Osaka Prefecture': ['Osaka', 'Sakai', 'Higashiosaka', 'Toyonaka', 'Suita', 'Ibaraki', 'Takatsuki', 'Hirakata', 'Neyagawa', 'Kadoma'],
+        'Kyoto Prefecture': ['Kyoto', 'Uji', 'Kameoka', 'Yawata', 'Muko', 'Nagaokakyo', 'Maizuru', 'Ayabe', 'Fukuchiyama', 'Miyazu'],
+        'Beijing Municipality': ['Dongcheng', 'Xicheng', 'Chaoyang', 'Fengtai', 'Shijingshan', 'Tongzhou', 'Changping', 'Daxing', 'Fangshan', 'Mentougou'],
+        'Shanghai Municipality': ['Huangpu', 'Xuhui', 'Changning', 'Jing\'an', 'Putuo', 'Hongkou', 'Yangpu', 'Minhang', 'Baoshan', 'Jiading'],
+        'Guangdong Province': ['Guangzhou', 'Shenzhen', 'Dongguan', 'Foshan', 'Zhuhai', 'Shantou', 'Huizhou', 'Jiangmen', 'Zhaoqing', 'Qingyuan'],
+        'Maharashtra State': ['Mumbai', 'Pune', 'Nagpur', 'Thane', 'Nashik', 'Aurangabad', 'Solapur', 'Kolhapur', 'Amravati', 'Nanded'],
+        'Delhi Territory': ['New Delhi', 'Old Delhi', 'Dwarka', 'Rohini', 'Pitampura', 'Rohini', 'Shahdara', 'Vivek Vihar', 'Preet Vihar', 'Laxmi Nagar'],
+        'Karnataka State': ['Bangalore', 'Mysore', 'Hubli', 'Mangalore', 'Belgaum', 'Gulbarga', 'Davanagere', 'Bellary', 'Bijapur', 'Raichur'],
+        'Telangana State': ['Hyderabad', 'Warangal', 'Karimnagar', 'Nizamabad', 'Adilabad', 'Khammam', 'Nalgonda', 'Medak', 'Rangareddy', 'Mahbubnagar'],
+        'Tamil Nadu State': ['Chennai', 'Coimbatore', 'Madurai', 'Salem', 'Tiruchirappalli', 'Vellore', 'Erode', 'Tiruppur', 'Tirunelveli', 'Vellore'],
+        'West Bengal State': ['Kolkata', 'Howrah', 'Durgapur', 'Asansol', 'Siliguri', 'Bardhaman', 'Bardhaman', 'Bardhaman', 'Bardhaman', 'Bardhaman'],
+        'Gauteng': ['Johannesburg', 'Pretoria', 'Soweto', 'Vereeniging', 'Krugersdorp', 'Roodepoort', 'Randburg', 'Benoni', 'Boksburg', 'Brakpan'],
+        'Western Cape': ['Cape Town', 'Bellville', 'Stellenbosch', 'Paarl', 'Worcester', 'George', 'Mossel Bay', 'Oudtshoorn', 'Knysna', 'Plettenberg Bay'],
+        'KwaZulu-Natal': ['Durban', 'Pietermaritzburg', 'Newcastle', 'Ladysmith', 'Richards Bay', 'Port Shepstone', 'Ballito', 'Umhlanga', 'Amanzimtoti', 'Margate'],
+        'New South Wales': ['Sydney', 'Newcastle', 'Wollongong', 'Central Coast', 'Coffs Harbour', 'Port Macquarie', 'Lismore', 'Wagga Wagga', 'Albury', 'Orange'],
+        'Victoria': ['Melbourne', 'Geelong', 'Ballarat', 'Bendigo', 'Shepparton', 'Mildura', 'Warrnambool', 'Albury-Wodonga', 'Latrobe Valley', 'Gippsland'],
+        'Queensland': ['Brisbane', 'Gold Coast', 'Townsville', 'Cairns', 'Toowoomba', 'Mackay', 'Rockhampton', 'Bundaberg', 'Hervey Bay', 'Sunshine Coast'],
+        'Western Australia': ['Perth', 'Fremantle', 'Rockingham', 'Mandurah', 'Bunbury', 'Geraldton', 'Albany', 'Kalgoorlie', 'Broome', 'Exmouth'],
+        'South Australia': ['Adelaide', 'Mount Gambier', 'Whyalla', 'Murray Bridge', 'Port Augusta', 'Port Pirie', 'Port Lincoln', 'Ceduna', 'Coober Pedy', 'Roxby Downs'],
+        'Tasmania': ['Hobart', 'Launceston', 'Devonport', 'Burnie', 'Ulverstone', 'Kingston', 'Glenorchy', 'Clarence', 'Sorell', 'Bridgewater'],
+        'Australian Capital Territory': ['Canberra', 'Belconnen', 'Woden', 'Tuggeranong', 'Gungahlin', 'Fyshwick', 'Mitchell', 'Hume', 'Forde', 'Bonner'],
+        'Northern Territory': ['Darwin', 'Alice Springs', 'Palmerston', 'Katherine', 'Jabiru', 'Tennant Creek', 'Jabiru', 'Jabiru', 'Jabiru', 'Jabiru']
       };
-      options = countryCities[currentLocation.country as keyof typeof countryCities] || 
-                ['New York', 'Sydney', 'London', 'Paris', 'Tokyo', 'Berlin', 'Rome', 'Beijing', 'Mumbai', 'Johannesburg'];
+      
+      // Try to get cities from the same region first, fallback to country
+      if (currentLocation.region && regionCities[currentLocation.region as keyof typeof regionCities]) {
+        options = regionCities[currentLocation.region as keyof typeof regionCities];
+        console.log(`🎯 Using region-specific cities for ${currentLocation.region}`);
+      } else {
+        // Fallback to country-level cities
+        const countryCities = {
+          'United States': ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'San Francisco', 'Miami', 'Philadelphia', 'San Antonio', 'San Diego'],
+          'Australia': ['Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaide', 'Gold Coast', 'Newcastle', 'Canberra', 'Sunshine Coast', 'Wollongong'],
+          'United Kingdom': ['London', 'Manchester', 'Birmingham', 'Liverpool', 'Leeds', 'Sheffield', 'Edinburgh', 'Bristol', 'Glasgow', 'Leicester'],
+          'France': ['Paris', 'Marseille', 'Lyon', 'Toulouse', 'Nice', 'Nantes', 'Strasbourg', 'Montpellier', 'Bordeaux', 'Lille'],
+          'Japan': ['Tokyo', 'Osaka', 'Kyoto', 'Yokohama', 'Nagoya', 'Sapporo', 'Kobe', 'Fukuoka', 'Kawasaki', 'Saitama'],
+          'Brazil': ['São Paulo', 'Rio de Janeiro', 'Brasília', 'Salvador', 'Fortaleza', 'Belo Horizonte', 'Manaus', 'Curitiba', 'Recife', 'Porto Alegre'],
+          'Egypt': ['Cairo', 'Alexandria', 'Giza', 'Luxor', 'Aswan', 'Sharm El Sheikh', 'Hurghada', 'Dahab', 'Siwa', 'Marsa Alam'],
+          'Germany': ['Berlin', 'Hamburg', 'Munich', 'Cologne', 'Frankfurt', 'Stuttgart', 'Düsseldorf', 'Dortmund', 'Essen', 'Leipzig'],
+          'Italy': ['Rome', 'Milan', 'Naples', 'Turin', 'Palermo', 'Genoa', 'Bologna', 'Florence', 'Bari', 'Catania'],
+          'China': ['Beijing', 'Shanghai', 'Guangzhou', 'Shenzhen', 'Chengdu', 'Tianjin', 'Chongqing', 'Nanjing', 'Wuhan', 'Xi\'an'],
+          'India': ['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Kolkata', 'Pune', 'Ahmedabad', 'Surat', 'Jaipur'],
+          'South Africa': ['Johannesburg', 'Cape Town', 'Durban', 'Pretoria', 'Port Elizabeth', 'Bloemfontein', 'East London', 'Kimberley', 'Nelspruit', 'Polokwane']
+        };
+        options = countryCities[currentLocation.country as keyof typeof countryCities] || 
+                  ['New York', 'Sydney', 'London', 'Paris', 'Tokyo', 'Berlin', 'Rome', 'Beijing', 'Mumbai', 'Johannesburg'];
+        console.log(`🌍 Using country-level cities for ${currentLocation.country}`);
+      }
       break;
   }
   
